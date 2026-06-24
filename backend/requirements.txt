@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-multipart
+doclayout_yolo
+ultralytics
+opencv-python
+Pillow
+torch
+huggingface_hub
