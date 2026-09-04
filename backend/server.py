@@ -16,7 +16,6 @@ Run inside the conda env that has doclayout_yolo + the Khmer OCR stack:
 """
 from __future__ import annotations
 
-import os
 import uuid
 from pathlib import Path
 
@@ -25,6 +24,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from app.config import settings
 import pipeline
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -36,22 +36,14 @@ for d in (PAGES_DIR, CROPS_DIR):
 
 ALLOWED_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".webp"}
 
-# Origins allowed to call the API (the Next.js dev/prod frontend). Override with
-# a comma-separated CORS_ORIGINS env var when deploying.
-CORS_ORIGINS = os.environ.get(
-    "CORS_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000,"
-    "http://localhost:3001,http://127.0.0.1:3001",
-).split(",")
-
 app = FastAPI(title="Khmer Document OCR API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in CORS_ORIGINS if o.strip()],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=settings.cors_origin_list,
+    allow_credentials=settings.cors_allow_credentials,
+    allow_methods=settings.cors_method_list,
+    allow_headers=settings.cors_header_list,
 )
 
 

@@ -1,7 +1,7 @@
 # app/services/model_pool.py
 from __future__ import annotations
 import torch
-from app.config import settings, BASE_DIR
+from app.config import settings
 from app.services.model_registry import DET_MODELS, RECOG_MODELS
 
 class ModelPool:
@@ -11,7 +11,7 @@ class ModelPool:
         self._recog = None
         self._recog_key = None
         self._det_key = None
-        self.active_det_key = "line_level"
+        self.active_det_key = settings.det_model
         self.active_recog_key = settings.recog_model
         self.det_conf = settings.det_conf
     
@@ -19,7 +19,7 @@ class ModelPool:
     def layout(self):
         if self._layout is None:
             from doclayout_yolo import YOLOv10
-            self._layout = YOLOv10(str(settings.layout_weights))
+            self._layout = YOLOv10(str(settings.layout_weights_path))
         return self._layout
     
     @property
@@ -60,10 +60,35 @@ class ModelPool:
         _ = self.recognizer
     
     def info(self) -> dict:
+        models = [
+            {
+                "id": model_id,
+                "name": model_id,
+                "label": meta.label,
+                "stage": "Detection",
+                "kind": "YOLO",
+                "path": str(meta.path),
+                "active": model_id == self.active_det_key,
+            }
+            for model_id, meta in DET_MODELS.items()
+        ]
+        models.extend(
+            {
+                "id": model_id,
+                "name": model_id,
+                "label": meta.label,
+                "stage": "Recognition",
+                "kind": "CRNN",
+                "path": str(meta.path),
+                "active": model_id == self.active_recog_key,
+            }
+            for model_id, meta in RECOG_MODELS.items()
+        )
+
         return {
             "device": "cuda" if torch.cuda.is_available() else "cpu",
             "warm": self._recog is not None,
             "active_model": self.active_recog_key,
             "active_det_model": self.active_det_key,
-            "models": []  # Populate from registries
+            "models": models,
         }

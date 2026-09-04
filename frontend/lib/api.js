@@ -1,7 +1,7 @@
 // API helpers for talking to the FastAPI backend.
 
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+  (process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000").replace(/\/$/, "");
 
 // Page-image and crop URLs from the API are relative (/storage/...); prefix them
 // with the backend origin so the Next.js app (different port) can load them.

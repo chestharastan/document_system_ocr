@@ -15,7 +15,7 @@ class RegionInput(BaseModel):
     box: Box
 
 class ProcessRegionsRequest(BaseModel):
-    image_path: str  # or file upload; adjust to your flow
+    page_id: str
     regions: list[RegionInput]
     recognize: bool = True
 
@@ -37,7 +37,7 @@ class BlockInput(BaseModel):
     lines: list[LineInput] = []
 
 class ProcessLinesRequest(BaseModel):
-    image_path: str
+    page_id: str
     blocks: list[BlockInput]
     recognize: bool = True
 

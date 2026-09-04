@@ -8,10 +8,24 @@ from typing import Optional
 import cv2
 from PIL import Image
 
+from app.config import settings
 from app.services.model_pool import ModelPool
 
 # Your existing constants
 LAYOUT_PAD = 8
+LAYOUT_LABEL_ALIASES = {
+    "caption": "figure_caption",
+    "footnote": "plain text",
+    "formula": "plain text",
+    "list-item": "plain text",
+    "page-footer": "abandon",
+    "page-header": "abandon",
+    "picture": "figure",
+    "section-header": "title",
+    "table": "figure",
+    "text": "plain text",
+    "title": "title",
+}
 LABEL_TO_TYPE = {
     "title": "title",
     "plain text": "paragraph",
@@ -30,6 +44,11 @@ TYPE_TO_LABEL = {
     "image": "figure",
     "caption": "figure_caption",
 }
+
+
+def _normalize_layout_label(label: str) -> str:
+    normalized = str(label).strip().lower().replace("_", "-")
+    return LAYOUT_LABEL_ALIASES.get(normalized, normalized.replace("-", "_"))
 
 
 class PipelineService:
@@ -82,16 +101,78 @@ class PipelineService:
             kept.append(box)
         return sorted(kept, key=lambda ln: (ln[1], ln[0]))
 
+    def _line_group_stats(self, group):
+        x1 = min(b[0] for b in group)
+        y1 = min(b[1] for b in group)
+        x2 = max(b[2] for b in group)
+        y2 = max(b[3] for b in group)
+        h = max(1.0, y2 - y1)
+        cy = (y1 + y2) / 2
+        return x1, y1, x2, y2, h, cy
+
+    def _same_text_row(self, box, group):
+        _gx1, gy1, _gx2, gy2, gh, gcy = self._line_group_stats(group)
+        by1, by2 = box[1], box[3]
+        bh = max(1.0, by2 - by1)
+        bcy = (by1 + by2) / 2
+        overlap = max(0.0, min(by2, gy2) - max(by1, gy1))
+        overlap_ratio = overlap / max(1.0, min(bh, gh))
+        center_close = abs(bcy - gcy) <= max(bh, gh) * settings.det_line_y_tolerance
+        return overlap_ratio >= settings.det_line_y_overlap or center_close
+
+    def _split_line_by_gaps(self, group):
+        ordered = sorted(group, key=lambda b: b[0])
+        if len(ordered) <= 1:
+            return ordered
+
+        heights = [max(1.0, b[3] - b[1]) for b in ordered]
+        avg_h = sum(heights) / len(heights)
+        max_gap = max(settings.det_line_x_gap_min, avg_h * settings.det_line_x_gap_ratio)
+        parts = [[ordered[0]]]
+        for box in ordered[1:]:
+            gap = box[0] - parts[-1][-1][2]
+            if gap > max_gap:
+                parts.append([box])
+            else:
+                parts[-1].append(box)
+        return [self._line_group_stats(part)[:4] for part in parts]
+
+    def _group_text_pieces_into_lines(self, boxes):
+        """Merge character/word boxes into reading-line boxes."""
+        if not boxes:
+            return []
+
+        groups = []
+        for box in sorted(boxes, key=lambda b: ((b[1] + b[3]) / 2, b[0])):
+            matches = [i for i, group in enumerate(groups) if self._same_text_row(box, group)]
+            if not matches:
+                groups.append([box])
+                continue
+
+            target = matches[0]
+            groups[target].append(box)
+            for idx in reversed(matches[1:]):
+                groups[target].extend(groups.pop(idx))
+
+        lines = []
+        for group in groups:
+            lines.extend(self._split_line_by_gaps(group))
+        return sorted(self._dedupe_lines(lines), key=lambda ln: (ln[1], ln[0]))
+
     # ------------------------------------------------------------------ #
     # Stages
     # ------------------------------------------------------------------ #
     def _layout_blocks(self, image_path):
         """Run doclayout, filter, merge, sort."""
-        res = self.pool.layout.predict(source=str(image_path), imgsz=1024, conf=0.25)[0]
+        res = self.pool.layout.predict(
+            source=str(image_path),
+            imgsz=settings.layout_imgsz,
+            conf=settings.layout_conf,
+        )[0]
         raw = []
         for box in res.boxes:
             x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
-            label = res.names[int(box.cls[0])]
+            label = _normalize_layout_label(res.names[int(box.cls[0])])
             if label in KEEP_LABELS:
                 raw.append((x1, y1, x2, y2, label))
         blocks = self._merge_and_filter_boxes(raw)
@@ -101,7 +182,9 @@ class PipelineService:
         """Detect all text lines on the full page."""
         res = self.pool.det(str(image_path), conf=self.pool.det_conf, verbose=False)[0]
         raw = [tuple(map(float, box.xyxy[0].tolist())) for box in res.boxes]
-        return sorted(raw, key=lambda ln: (ln[1], ln[0]))
+        if settings.det_group_lines:
+            return self._group_text_pieces_into_lines(raw)
+        return sorted(self._dedupe_lines(raw), key=lambda ln: (ln[1], ln[0]))
 
     def _lines_in_block(self, page_lines, bx1, by1, bx2, by2):
         inside = [
