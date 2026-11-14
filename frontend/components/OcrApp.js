@@ -10,6 +10,7 @@ import {
   fetchModels,
   setRecognitionModel,
   setDetectionModel,
+  setStageModel,
   reprocessPage,
 } from "@/lib/api";
 
@@ -37,7 +38,7 @@ export default function OcrApp() {
           <span className="logo-mark" />
           <div>
             <h1>Khmer Document OCR</h1>
-            <p>Layout analysis · Text detection · Recognition</p>
+            <p>Layout analysis · Text-line detection · Recognition</p>
           </div>
         </div>
         <div className="topbar-actions">
@@ -170,6 +171,7 @@ export default function OcrApp() {
         <aside className="pipeline">
           <div className="pipeline-steps" id="steps" />
           <div className="stats" id="stats" />
+          <div className="timings" id="timings" hidden />
           <div className="transcript-head">
             <h3>Recognized structure</h3>
             <div className="transcript-actions">
@@ -208,20 +210,27 @@ function runController() {
     try {
       const info = await fetchModels();
       const models = info.models || [];
-      const activeModel = info.active_model || "";
-      const activeDetModel = info.active_det_model || "";
-
-      const recogModels = models.filter((m) => m.stage === "Recognition");
-      const detModels = models.filter((m) => m.stage === "Detection");
-
-      const recogOptions = recogModels.map((m) => `
-        <option value="${escapeHtml(m.id)}"${m.id === activeModel ? " selected" : ""}>
-          ${escapeHtml(m.label || m.name)}
-        </option>`).join("");
-      const detOptions = detModels.map((m) => `
-        <option value="${escapeHtml(m.id)}"${m.id === activeDetModel ? " selected" : ""}>
-          ${escapeHtml(m.label || m.name)}
-        </option>`).join("");
+      // One picker per pipeline stage. Older backends only report Detection +
+      // Recognition and only know the /models + /det-models switch endpoints.
+      const PICKERS = [
+        { stage: "Layout", key: "layout", title: "Layout model",
+          active: info.active_layout_model || "", set: (id) => setStageModel("layout", id) },
+        { stage: "Detection", key: "textdet", title: "Text-line detection model",
+          active: info.active_det_model || "", set: setDetectionModel },
+        { stage: "Recognition", key: "rec", title: "Recognition model",
+          active: info.active_model || "", set: setRecognitionModel },
+      ].filter((p) => models.some((m) => m.stage === p.stage));
+      const pickerHtml = PICKERS.map((p) => {
+        const opts = models.filter((m) => m.stage === p.stage).map((m) => `
+          <option value="${escapeHtml(m.id)}"${m.id === p.active ? " selected" : ""}>
+            ${escapeHtml(m.label || m.name)}
+          </option>`).join("");
+        return `
+        <label class="model-picker">
+          <span>${escapeHtml(p.title)}</span>
+          <select data-stage="${p.key}">${opts}</select>
+        </label>`;
+      }).join("");
 
       const rows = models.map((m) => `
         <div class="model-row${m.active ? " active" : ""}">
@@ -233,50 +242,29 @@ function runController() {
 
       const hasPage = state.current >= 0 && state.animated.has(state.current);
       list.innerHTML = `
-        <label class="model-picker">
-          <span>Recognition model</span>
-          <select id="recogModelSelect">${recogOptions}</select>
-        </label>
-        <label class="model-picker">
-          <span>Detection model</span>
-          <select id="detModelSelect">${detOptions}</select>
-        </label>
+        ${pickerHtml}
         ${rows}
         <div class="model-foot">
           <span>Device: <b>${escapeHtml((info.device || "cpu").toUpperCase())}</b></span>
-          <span>${info.warm ? "Models loaded" : "Loads on first run"}</span>
+          <span>${info.warm ? "Models loaded" : "Loads on first run"}${info.postcorrect && info.postcorrect !== "none" ? ` · post-correct: ${escapeHtml(info.postcorrect)}` : ""}</span>
           ${hasPage ? `<button id="rerunPageBtn" class="mini-btn">Re-run page</button>` : ""}
         </div>`;
 
-      const recogSelect = $("#recogModelSelect", list);
-      if (recogSelect) {
-        recogSelect.addEventListener("change", async () => {
-          recogSelect.disabled = true;
+      PICKERS.forEach((p) => {
+        const sel = $(`select[data-stage="${p.key}"]`, list);
+        if (!sel) return;
+        sel.addEventListener("change", async () => {
+          sel.disabled = true;
           try {
-            await setRecognitionModel(recogSelect.value);
-            toast("Recognition model changed");
+            await p.set(sel.value);
+            toast(`${p.title.replace(/ model$/, "")} model changed`);
             await loadModelInfo();
           } catch (err) {
             toast("Model switch failed: " + err.message);
-            recogSelect.disabled = false;
+            sel.disabled = false;
           }
         });
-      }
-
-      const detSelect = $("#detModelSelect", list);
-      if (detSelect) {
-        detSelect.addEventListener("change", async () => {
-          detSelect.disabled = true;
-          try {
-            await setDetectionModel(detSelect.value);
-            toast("Detection model changed");
-            await loadModelInfo();
-          } catch (err) {
-            toast("Model switch failed: " + err.message);
-            detSelect.disabled = false;
-          }
-        });
-      }
+      });
 
       const rerunBtn = $("#rerunPageBtn", list);
       if (rerunBtn) {
@@ -291,6 +279,7 @@ function runController() {
             page.blocks = res.blocks;
             page.width = res.width;
             page.height = res.height;
+            page.timings = res.timings;
             state.animated.delete(state.current);
             state.token++;
             $("#viewPredoc").disabled = true;
@@ -312,6 +301,42 @@ function runController() {
     title: "Title", paragraph: "Paragraph", header: "Header",
     caption: "Caption", image: "Image / Logo",
   };
+  // Layout taxonomy v2 (backend/app/taxonomy.py): [class, label, RGB colour].
+  // `type` stays the coarse v1 type (title/paragraph/header/caption/image) used
+  // for styling; `cls` is the fine class used for labels, colours and editing.
+  const CLASSES = [
+    ["text", "Text", [60, 120, 216]], ["title", "Title", [230, 120, 20]],
+    ["section_header", "Section header", [240, 170, 40]], ["list", "List", [110, 80, 200]],
+    ["table", "Table", [30, 160, 110]], ["figure", "Figure", [200, 60, 160]],
+    ["caption", "Caption", [150, 110, 60]], ["header", "Header", [120, 140, 160]],
+    ["footer", "Footer", [100, 120, 140]], ["page_number", "Page number", [80, 80, 120]],
+    ["footnote", "Footnote", [140, 140, 90]], ["formula", "Formula", [130, 60, 60]],
+    ["signature", "Signature", [220, 30, 30]], ["stamp", "Stamp", [180, 20, 90]],
+    ["logo", "Logo", [20, 150, 190]], ["qr_code", "QR code", [90, 90, 90]],
+    ["barcode", "Barcode", [50, 50, 50]], ["photo", "Photo", [255, 100, 100]],
+    ["handwriting", "Handwriting", [200, 150, 0]], ["checkbox", "Checkbox", [0, 180, 200]],
+    ["form_field", "Form field", [160, 200, 60]],
+  ];
+  const CLASS_LABEL = Object.fromEntries(CLASSES.map(([c, l]) => [c, l]));
+  const CLASS_COLOR = Object.fromEntries(CLASSES.map(([c, , rgb]) => [c, `rgb(${rgb.join(",")})`]));
+  const TEXT_CLASSES = new Set(["text", "title", "section_header", "list", "caption", "header",
+    "footer", "page_number", "footnote", "table", "form_field"]);
+  const TYPE_TO_CLASS = { paragraph: "text", title: "title", header: "header", caption: "caption", image: "figure" };
+  const classType = (cls) => {
+    if (!TEXT_CLASSES.has(cls)) return "image";
+    if (cls === "title" || cls === "section_header") return "title";
+    if (cls === "header" || cls === "footer" || cls === "page_number") return "header";
+    return cls === "caption" ? "caption" : "paragraph";
+  };
+  const blockClass = (b) => (b.cls && CLASS_LABEL[b.cls] ? b.cls : TYPE_TO_CLASS[b.type] || "text");
+  const blockLabel = (b) => (b.cls && CLASS_LABEL[b.cls]) || TYPE_LABEL[b.type] || b.type;
+  const blockColor = (b) => b.color || CLASS_COLOR[blockClass(b)] || "";
+  // Give a box element its class colour (outline + tag) via a CSS variable.
+  function paintBox(el, color) {
+    if (!color) return;
+    el.classList.add("has-c");
+    el.style.setProperty("--c", color);
+  }
   const STEPS = [
     { key: "layout", title: "Layout analysis", idle: "Detecting document structure" },
     { key: "detect", title: "Text detection", idle: "Locating text lines" },
@@ -332,14 +357,54 @@ function runController() {
   }
 
   function shouldRecognizeBlock(block) {
+    // v2 backends say so per block; v1 backends never read image/header blocks.
+    if (typeof block.recognized === "boolean") return block.recognized;
     return block.type !== "image" && block.type !== "header";
   }
 
   function blockStatusText(block) {
-    if (block.type === "image") return "▣ cropped at original coordinates";
-    if (block.type === "header") return "▣ cropped from original (not recognized)";
+    if (block.type === "image") return `▣ ${blockLabel(block).toLowerCase()} cropped at original coordinates`;
+    if (block.crop) return "▣ cropped from original (not recognized)";
     return "";
   }
+
+  // Transcript entry for a block: type label, text (or crop status + thumbnail).
+  function transcriptBlock(block, show) {
+    const tr = document.createElement("div");
+    tr.className = "tr-block" + (show ? " show" : "") +
+      (shouldRecognizeBlock(block) ? "" : " is-image");
+    tr.innerHTML =
+      `<div class="tr-type"><i class="tr-dot"></i>${escapeHtml(blockLabel(block))}</div>` +
+      `<div class="tr-text"></div>`;
+    const color = blockColor(block);
+    if (color) tr.querySelector(".tr-dot").style.background = color;
+    if (!shouldRecognizeBlock(block) && block.crop) {
+      const im = document.createElement("img");
+      im.className = "tr-crop";
+      im.src = abs(block.crop.url);
+      im.alt = blockLabel(block);
+      tr.appendChild(im);
+    }
+    return tr;
+  }
+
+  // Per-stage latency reported by the backend (v2: page.timings, in ms).
+  function renderTimings(page) {
+    const el = $("#timings");
+    const t = page && page.timings;
+    if (!el) return;
+    if (!t) { el.innerHTML = ""; el.hidden = true; return; }
+    const fmt = (v) => (v == null ? "–" : v >= 1000 ? (v / 1000).toFixed(2) + " s" : Math.round(v) + " ms");
+    const rows = [
+      ["Layout", t.layout_ms], ["Text lines", t.textdet_ms], ["Recognition", t.rec_ms],
+      ["Post-correct", t.postcorrect_ms], ["Total", t.total_ms],
+    ];
+    el.hidden = false;
+    el.innerHTML =
+      `<div class="timings-head">Stage timing${page.device ? ` · ${escapeHtml(String(page.device).toUpperCase())}` : ""}</div>` +
+      rows.map(([k, v]) => `<div class="timing-row${k === "Total" ? " total" : ""}"><span>${k}</span><b>${fmt(v)}</b></div>`).join("");
+  }
+  const stepMs = (v) => (v == null ? "" : ` · ${Math.round(v)} ms`);
 
   function paragraphTabIndent(block, line, lines = textLines(block)) {
     if (block.type !== "paragraph" || !line.box || !block.box) return 0;
@@ -361,7 +426,12 @@ function runController() {
   function lineText(block, line, lines = textLines(block)) {
     const text = line.text || "";
     if (!text) return "";
-    return (paragraphTabIndent(block, line, lines) ? "\t" : "") + text;
+    // v2 backends give the tab stop of every line (indent_level, 0 = column margin) and the list bullet the
+    // detector dropped; v1 backends only the block-relative indent.
+    const level = Number.isFinite(Number(line.indent_level)) && line.indent_level !== undefined
+      ? Math.max(0, Number(line.indent_level)) : (paragraphTabIndent(block, line, lines) ? 1 : 0);
+    const bullet = line.bullet ? `${line.bullet} ` : "";
+    return "\t".repeat(level) + bullet + text;
   }
 
   function blockText(block) {
@@ -693,6 +763,8 @@ function runController() {
     const recognitionBlocks = textBlocks.filter(shouldRecognizeBlock);
     const totalRecognizedLines = recognitionBlocks.reduce((n, b) => n + b.lines.length, 0);
     setStats({ blocks: page.blocks.length, lines: totalLines, images: imageBlocks.length });
+    renderTimings(null);
+    const tm = page.timings || {};
 
     setStep("layout", "run", "Scanning page…");
     await fullSweep();
@@ -705,7 +777,8 @@ function runController() {
       const el = document.createElement("div");
       el.className = `bbox t-${block.type}`;
       placeBox(el, block.box, page);
-      el.innerHTML = `<span class="tag">${TYPE_LABEL[block.type] || block.type}</span>`;
+      el.innerHTML = `<span class="tag">${escapeHtml(blockLabel(block))}</span>`;
+      paintBox(el, blockColor(block));
       overlay.appendChild(el);
       boxEls.set(block.id, el);
       requestAnimationFrame(() => el.classList.add("show"));
@@ -714,7 +787,7 @@ function runController() {
       await sleep(70);
       if (!live()) return;
     }
-    setStep("layout", "done", `${page.blocks.length} regions found`);
+    setStep("layout", "done", `${page.blocks.length} regions found${stepMs(tm.layout_ms)}`);
 
     setStep("detect", "run", "Detecting lines…");
     const lineEls = [];
@@ -738,19 +811,14 @@ function runController() {
       }
       bEl && bEl.classList.remove("active");
     }
-    setStep("detect", "done", `${totalLines} text lines`);
+    setStep("detect", "done", `${totalLines} text lines${stepMs(tm.textdet_ms)}`);
 
     setStep("recognize", "run",
       totalRecognizedLines ? "Reading lines…" : "No non-header text to read");
     const trWrap = $("#transcript");
     let read = 0;
     for (const block of page.blocks) {
-      const tr = document.createElement("div");
-      tr.className = "tr-block" +
-        (block.type === "image" || block.type === "header" ? " is-image" : "");
-      tr.innerHTML =
-        `<div class="tr-type">${TYPE_LABEL[block.type] || block.type}</div>` +
-        `<div class="tr-text"></div>`;
+      const tr = transcriptBlock(block, false);
       trWrap.appendChild(tr);
       requestAnimationFrame(() => tr.classList.add("show"));
 
@@ -772,13 +840,14 @@ function runController() {
         el.classList.remove("reading");
       }
     }
-    setStep("recognize", "done", `${totalRecognizedLines} lines recognized`);
+    setStep("recognize", "done", `${totalRecognizedLines} lines recognized${stepMs(tm.rec_ms)}`);
 
     setStep("build", "run", "Laying out page…");
     buildPredoc(page);
     await sleep(250);
     if (!live()) return;
     setStep("build", "done", "Editable document ready");
+    renderTimings(page);
 
     state.animated.add(state.current);
     markRail();
@@ -800,7 +869,8 @@ function runController() {
       const el = document.createElement("div");
       el.className = `bbox t-${block.type} show`;
       placeBox(el, block.box, page);
-      el.innerHTML = `<span class="tag">${TYPE_LABEL[block.type] || block.type}</span>`;
+      el.innerHTML = `<span class="tag">${escapeHtml(blockLabel(block))}</span>`;
+      paintBox(el, blockColor(block));
       overlay.appendChild(el);
       for (const line of block.lines || []) {
         const le = document.createElement("div");
@@ -816,16 +886,16 @@ function runController() {
 
     const trWrap = $("#transcript");
     for (const block of page.blocks) {
-      const tr = document.createElement("div");
-      tr.className = "tr-block show" +
-        (block.type === "image" || block.type === "header" ? " is-image" : "");
+      const tr = transcriptBlock(block, true);
       const txt = shouldRecognizeBlock(block) ? blockText(block) : blockStatusText(block);
-      tr.innerHTML =
-        `<div class="tr-type">${TYPE_LABEL[block.type] || block.type}</div>` +
-        `<div class="tr-text"></div>`;
       tr.querySelector(".tr-text").textContent = txt;
       trWrap.appendChild(tr);
     }
+    const tm = page.timings || {};
+    setStep("layout", "done", `${page.blocks.length} regions found${stepMs(tm.layout_ms)}`);
+    setStep("detect", "done", `${totalLines} text lines${stepMs(tm.textdet_ms)}`);
+    setStep("recognize", "done", `${page.blocks.filter(shouldRecognizeBlock).reduce((n, b) => n + b.lines.length, 0)} lines recognized${stepMs(tm.rec_ms)}`);
+    renderTimings(page);
     buildPredoc(page);
     $("#viewPredoc").disabled = false;
     updateEditBtn();
@@ -837,10 +907,8 @@ function runController() {
    * delete wrong ones, and change a block's type. Applying sends the edited
    * regions back to the server, which re-detects + re-recognises each one and
    * returns fresh blocks that rebuild every view. */
-  const EDIT_TYPES = [
-    ["paragraph", "Paragraph"], ["title", "Title"], ["header", "Header"],
-    ["caption", "Caption"], ["image", "Image / Logo"],
-  ];
+  // All taxonomy classes; the backend accepts v2 class names (and v1 types).
+  const EDIT_TYPES = CLASSES.map(([c, l]) => [c, l]);
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
   // Map a pointer event to page-pixel coordinates inside the overlay.
@@ -896,12 +964,12 @@ function runController() {
     state.editing = true;
     // Snapshot both layers up front so toggling between them keeps your edits.
     state.editBoxes = page.blocks.map((b) => ({
-      type: b.type === "image" ? "image" : b.type,
+      type: blockClass(b),
       x: b.box.x, y: b.box.y, w: b.box.width, h: b.box.height,
     }));
     state.editLineBoxes = [];
     page.blocks.forEach((b) => {
-      if (b.type === "image") return;
+      if (!shouldRecognizeBlock(b) && !(b.lines || []).length) return;
       (b.lines || []).forEach((l) => state.editLineBoxes.push({
         x: l.box.x, y: l.box.y, w: l.box.width, h: l.box.height,
       }));
@@ -942,7 +1010,8 @@ function runController() {
     if (lines) {
       state.editBoxes.forEach((b) => {
         const ctx = document.createElement("div");
-        ctx.className = `ebox-ctx t-${b.type}`;
+        ctx.className = `ebox-ctx t-${classType(b.type)}`;
+        paintBox(ctx, CLASS_COLOR[b.type]);
         placeBox(ctx, { x: b.x, y: b.y, width: b.w, height: b.h }, page);
         overlay.appendChild(ctx);
       });
@@ -950,7 +1019,8 @@ function runController() {
 
     items().forEach((b, i) => {
       const el = document.createElement("div");
-      el.className = lines ? "ebox eline" : `ebox t-${b.type}`;
+      el.className = lines ? "ebox eline" : `ebox t-${classType(b.type)}`;
+      if (!lines) paintBox(el, CLASS_COLOR[b.type]);
       el.dataset.i = i;
       placeBox(el, { x: b.x, y: b.y, width: b.w, height: b.h }, page);
 
@@ -967,7 +1037,8 @@ function runController() {
         sel.addEventListener("pointerdown", (e) => e.stopPropagation());
         sel.addEventListener("change", () => {
           state.editBoxes[i].type = sel.value;
-          el.className = `ebox t-${sel.value}`;
+          el.className = `ebox t-${classType(sel.value)}`;
+          paintBox(el, CLASS_COLOR[sel.value]);
         });
         tag.appendChild(sel);
         el.appendChild(tag);
@@ -1064,11 +1135,11 @@ function runController() {
     const page = state.pages[state.current];
     const arr = items();
     const a = ptToPage(e, page);
-    const i = arr.push({ type: "paragraph", x: a.x, y: a.y, w: 0, h: 0 }) - 1;
+    const i = arr.push({ type: "text", x: a.x, y: a.y, w: 0, h: 0 }) - 1;
     renderEditBoxes(page);
     runDrag(e, (dx, dy, p) => {
       arr[i] = {
-        type: "paragraph",
+        type: "text",
         x: Math.min(a.x, p.x), y: Math.min(a.y, p.y),
         w: Math.abs(p.x - a.x), h: Math.abs(p.y - a.y),
       };
@@ -1101,6 +1172,7 @@ function runController() {
     page.blocks = res.blocks;
     page.width = res.width;
     page.height = res.height;
+    page.timings = res.timings;
     exitEdit();
     renderFinal(page);
     toast("Detection updated");
@@ -1141,7 +1213,7 @@ function runController() {
       lines: [],
     }));
     const textIdx = blockBoxes
-      .map((b, i) => (b.type === "image" ? -1 : i))
+      .map((b, i) => (TEXT_CLASSES.has(b.type) ? i : -1))
       .filter((i) => i >= 0);
 
     for (const ln of state.editLineBoxes) {
@@ -1182,11 +1254,12 @@ function runController() {
       // Layout region outline (with type label).
       const box = document.createElement("div");
       box.className = `pd-box t-${block.type}`;
+      paintBox(box, blockColor(block));
       box.style.left = block.box.x + "px";
       box.style.top = block.box.y + "px";
       box.style.width = block.box.width + "px";
       box.style.height = block.box.height + "px";
-      if ((block.type === "image" || block.type === "header") && block.crop) {
+      if (block.crop && !shouldRecognizeBlock(block)) {
         const im = document.createElement("img");
         im.className = "pd-crop";
         im.src = abs(block.crop.url);
@@ -1198,11 +1271,12 @@ function runController() {
       // — which clips the text to the box — does not also hide the label.
       const tag = document.createElement("span");
       tag.className = "pd-tag";
-      tag.textContent = TYPE_LABEL[block.type] || block.type;
+      tag.textContent = blockLabel(block);
+      paintBox(tag, blockColor(block));
       tag.style.left = block.box.x + "px";
       tag.style.top = block.box.y + "px";
       pg.appendChild(tag);
-      if (block.type === "image" || block.type === "header") continue;
+      if (!shouldRecognizeBlock(block)) continue;
 
       // Recognized text lives INSIDE the layout box (which is overflow:hidden),
       // so the text area stays within the box. Lines are spread evenly across the
@@ -1210,7 +1284,9 @@ function runController() {
       const lines = textLines(block);
       if (!lines.length) continue;
       const slot = block.box.height / lines.length;   // equal vertical share per line
-      const baseFont = Math.max(7, slot * 0.62);
+      // v2 backends measure one font size for the whole block (font_px, Khmer OS metrics); else fit the slot
+      const baseFont = Number.isFinite(Number(block.font_px)) && Number(block.font_px) > 0
+        ? Math.max(6, Math.min(Number(block.font_px) * 1.1, slot * 0.9)) : Math.max(7, slot * 0.62);
       // Paragraph tab rule: render the same leading tab character as the
       // recognized preview, and preserve it with white-space: pre.
       lines.forEach((line, i) => {

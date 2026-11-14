@@ -103,3 +103,17 @@ export async function recognizeLines(pageId, blocks) {
   }
   return res.json();
 }
+
+// Switch the active model of any pipeline stage ("layout" | "textdet" | "rec").
+export async function setStageModel(stage, modelId) {
+  const res = await fetch(`${API_BASE}/pipeline/models`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ stage, model_id: modelId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `Server error ${res.status}`);
+  }
+  return res.json();
+}

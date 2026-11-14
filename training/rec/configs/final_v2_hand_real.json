@@ -1,0 +1,187 @@
+{
+ "train": [
+  {
+   "kind": "sections",
+   "path": "out",
+   "sections": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08"
+   ],
+   "split": "train",
+   "n": 200000
+  },
+  {
+   "kind": "folder",
+   "path": "../../dataset_v2",
+   "split": "train",
+   "levels": [
+    "scene",
+    "heavy",
+    "medium"
+   ]
+  },
+  {
+   "kind": "folder",
+   "path": "../../dataset_v2",
+   "split": "train",
+   "levels": [
+    "clean"
+   ],
+   "n": 25000
+  },
+  {
+   "kind": "folder",
+   "path": "../../dataset_nf_mix",
+   "split": "train"
+  },
+  {
+   "kind": "folder",
+   "path": "../../dataset_hard",
+   "split": "train"
+  },
+  {
+   "kind": "folder",
+   "path": "../../dataset_nf_hard",
+   "split": "train"
+  },
+  {
+   "kind": "folder",
+   "path": "../../dataset_long",
+   "split": "train",
+   "n": 10000
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_doclaynet",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_docgen",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_exam_hand",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_docgen_hand",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_soyvitou",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_soyvitou",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_soyvitou",
+   "split": "train"
+  },
+  {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_soyvitou",
+   "split": "train"
+  }
+ ],
+ "val": {
+  "V01": {
+   "kind": "sections",
+   "path": "out",
+   "sections": [
+    "V01"
+   ],
+   "split": "val",
+   "n": 12000
+  },
+  "v2": {
+   "kind": "folder",
+   "path": "../../dataset_v2",
+   "split": "val",
+   "n": 6000
+  },
+  "en_real": {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_doclaynet",
+   "split": "val"
+  },
+  "docgen": {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_docgen",
+   "split": "val"
+  },
+  "hand_exam": {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_exam_hand",
+   "split": "val"
+  },
+  "hand_form": {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_docgen_hand",
+   "split": "val"
+  },
+  "hand_real_thareah": {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_thareah",
+   "split": "val"
+  },
+  "hand_real_soy": {
+   "kind": "packed",
+   "path": "/home/hello/ocr/docsys/work/data/rec_hand_real_soyvitou",
+   "split": "val"
+  }
+ }
+}

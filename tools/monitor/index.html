@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document OCR v2 · Training monitor</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #1d232b; --muted: #66707c; --line: #e3e6ea;
+    --accent: #2f6fd6; --ok: #1f9d63; --warn: #d98a00; --bad: #d64545; --run: #2f6fd6;
+    --s1: #2f6fd6; --s2: #e07a1f; --s3: #1f9d63; --s4: #9b4dca; --s5: #d64545;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #12161b; --card: #1a2027; --ink: #e6e9ee; --muted: #98a2ad; --line: #2a323b;
+            --accent: #6aa1ff; --s1: #6aa1ff; --s2: #f29a4a; --s3: #45c48a; --s4: #c08af0; --s5: #f07070; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", "Noto Sans Khmer", sans-serif; background: var(--bg); color: var(--ink); }
+  header { padding: 18px 24px 8px; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  h1 { font-size: 20px; margin: 0; }
+  .muted { color: var(--muted); }
+  main { padding: 8px 24px 40px; display: grid; gap: 16px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .grid2 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .card h2 { font-size: 15px; margin: 0 0 10px; }
+  .tile .v { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .tile .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+  .bar > i { display: block; height: 100%; background: var(--accent); }
+  .chip { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+  .chip.done { background: color-mix(in srgb, var(--ok) 18%, transparent); color: var(--ok); }
+  .chip.running, .chip.active { background: color-mix(in srgb, var(--run) 18%, transparent); color: var(--run); }
+  .chip.queued { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .chip.failed { background: color-mix(in srgb, var(--bad) 18%, transparent); color: var(--bad); }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  td, th { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; }
+  .run-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .kv { display: flex; gap: 18px; flex-wrap: wrap; margin: 6px 0; }
+  .kv div b { font-variant-numeric: tabular-nums; }
+  svg text { fill: var(--muted); font-size: 11px; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .legend span::before { content: ""; display: inline-block; width: 10px; height: 3px; margin-right: 5px; vertical-align: middle; background: var(--c); }
+  code { font-size: 12px; color: var(--muted); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--ok); margin-right: 6px; }
+  .dot.stale { background: var(--bad); }
+  .thumbs { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); margin-top: 8px; }
+  .thumbs a { position: relative; display: block; }
+  .thumbs img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); display: block; }
+  .thumbs .chip { position: absolute; left: 4px; bottom: 4px; background: var(--card); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Document OCR v2 · Training monitor</h1>
+  <span class="muted" id="goal"></span>
+  <span class="muted" style="margin-left:auto"><span class="dot" id="dot"></span><span id="ts">loading…</span></span>
+</header>
+<main>
+  <section class="grid" id="tiles"></section>
+  <section class="card"><div class="run-head"><h2>Your documents (camera card)</h2><span class="muted" id="udmeta"></span></div><div id="userdocs"></div></section>
+  <section class="card"><h2>Running jobs</h2><div id="jobs"></div></section>
+  <section class="grid2" id="runs"></section>
+  <section class="grid2">
+    <div class="card"><h2>Pipeline</h2><div id="stages"></div></div>
+    <div class="card"><h2>Team</h2><div id="team"></div></div>
+  </section>
+  <section class="grid2">
+    <div class="card"><h2>Results (held-out evaluation)</h2><div id="results"></div></div>
+    <div class="card"><h2>Data jobs</h2><div id="data"></div></div>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtDur = s => { s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return h ? `${h}h ${m}m` : `${m}m ${s%60}s`; };
+const ago = t => fmtDur(Date.now()/1000 - t) + " ago";
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+function tile(k, v, sub, frac) {
+  return `<div class="card tile"><div class="k">${k}</div><div class="v">${v}</div>
+    <div class="muted">${sub || ""}</div>${frac != null ? `<div class="bar"><i style="width:${Math.min(100, frac*100).toFixed(1)}%"></i></div>` : ""}</div>`;
+}
+
+// series: [{name, color, pts:[[x,y],...]}]; lower = true flips "better" hint only in the label
+function chart(series, {w = 420, h = 170, ylabel = "", pct = false} = {}) {
+  const all = series.flatMap(s => s.pts);
+  if (!all.length) return `<div class="muted">no epochs yet</div>`;
+  const pad = {l: 44, r: 10, t: 8, b: 22};
+  let xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+  let x0 = Math.min(...xs), x1 = Math.max(...xs); if (x0 === x1) { x0 -= 1; x1 += 1; }
+  let y0 = Math.min(...ys), y1 = Math.max(...ys); const dy = (y1 - y0) || Math.abs(y1) * 0.1 || 1; y0 -= dy * 0.08; y1 += dy * 0.08;
+  const X = x => pad.l + (x - x0) / (x1 - x0) * (w - pad.l - pad.r);
+  const Y = y => h - pad.b - (y - y0) / (y1 - y0) * (h - pad.t - pad.b);
+  let g = "";
+  for (let i = 0; i <= 4; i++) {
+    const v = y0 + (y1 - y0) * i / 4, yy = Y(v);
+    g += `<line x1="${pad.l}" x2="${w - pad.r}" y1="${yy}" y2="${yy}" stroke="${css('--line')}"/>`;
+    g += `<text x="${pad.l - 6}" y="${yy + 4}" text-anchor="end">${pct ? v.toFixed(2) + "%" : v.toFixed(3)}</text>`;
+  }
+  const xt = [...new Set(xs)].sort((a, b) => a - b); const step = Math.max(1, Math.ceil(xt.length / 10));
+  xt.forEach((x, i) => { if (i % step === 0 || i === xt.length - 1) g += `<text x="${X(x)}" y="${h - 6}" text-anchor="middle">${x}</text>`; });
+  for (const s of series) {
+    if (!s.pts.length) continue;
+    const d = s.pts.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("");
+    g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2"/>`;
+    for (const p of s.pts) g += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="2.6" fill="${s.color}"><title>${esc(s.name)} · epoch ${p[0]}: ${p[1].toFixed(4)}</title></circle>`;
+  }
+  const legend = `<div class="legend">${series.map(s => `<span style="--c:${s.color}">${esc(s.name)}</span>`).join("")}${ylabel ? `<span class="muted">${esc(ylabel)}</span>` : ""}</div>`;
+  return legend + `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">${g}</svg>`;
+}
+
+function progressHtml(p) {
+  if (!p) return "";
+  if (p.phase) return `<div class="muted">${esc(p.phase)}…</div>`;
+  const frac = p.steps ? p.step / p.steps : 0;
+  const ep = p.epochs ? `epoch ${p.epoch}/${p.epochs}` : `epoch ${p.epoch}`;
+  return `<div class="kv"><div>${ep}</div><div>step <b>${p.step}</b>/${p.steps}</div><div>${esc(p.speed || "")}</div>
+    ${p.eta_epoch ? `<div>epoch ETA <b>${esc(p.eta_epoch)}</b></div>` : ""}${p.loss != null ? `<div>loss <b>${p.loss}</b></div>` : ""}</div>
+    <div class="bar"><i style="width:${(frac*100).toFixed(1)}%"></i></div>`;
+}
+
+function runCard(r) {
+  const colors = [css('--s1'), css('--s2'), css('--s3'), css('--s4'), css('--s5')];
+  let body = "";
+  if (r.error) body = `<div class="muted">error: ${esc(r.error)}</div>`;
+  else if (r.kind.startsWith("layout")) {
+    const e = r.epochs;
+    const b = r.best;
+    body += progressHtml(r.progress);
+    body += b ? `<div class="kv"><div>best mAP50-95 <b>${b.mAP.toFixed(3)}</b> (ep ${b.epoch})</div><div>mAP50 <b>${b.mAP50.toFixed(3)}</b></div>
+      <div>P <b>${b.P.toFixed(3)}</b> R <b>${b.R.toFixed(3)}</b></div><div>${e.length ? e[e.length-1].minutes.toFixed(0) + " min elapsed" : ""}</div></div>` : "";
+    body += chart([{name: "mAP50", color: colors[0], pts: e.map(x => [x.epoch, x.mAP50])},
+                   {name: "mAP50-95", color: colors[1], pts: e.map(x => [x.epoch, x.mAP])}], {ylabel: "validation (higher = better)"});
+  } else if (r.kind.startsWith("recogniser")) {
+    const e = r.epochs;
+    body += progressHtml(r.progress);
+    body += `<div class="kv"><div>state <b>${esc(r.state || "?")}</b></div>${r.params_m ? `<div><b>${r.params_m.toFixed(2)}M</b> params</div>` : ""}
+      ${r.best_val_cer != null ? `<div>best val CER <b>${r.best_val_cer.toFixed(3)}%</b></div>` : ""}</div>`;
+    const sets = [...new Set(e.flatMap(x => Object.keys(x.val_by_set || {})))];
+    const ser = sets.map((s, i) => ({name: s, color: colors[i % colors.length], pts: e.filter(x => x.val_by_set && s in x.val_by_set).map(x => [x.epoch, x.val_by_set[s]])}));
+    body += chart(ser, {ylabel: "val CER % (lower = better)", pct: true});
+    const rd = e.filter(x => x.real_dev_cer != null).map(x => [x.epoch, x.real_dev_cer]);
+    if (rd.length) body += chart([{name: "real Khmer signboards (dev)", color: colors[4], pts: rd}], {h: 120, ylabel: "CER % (lower = better)", pct: true});
+  } else {
+    body += `<div class="muted"><code>${esc(r.live || "")}</code></div>`;
+    if (r.history && r.history.length) {
+      const keys = Object.keys(r.history[0]).filter(k => k !== "iter" && typeof r.history[0][k] === "number").slice(0, 5);
+      body += chart(keys.map((k, i) => ({name: k, color: colors[i], pts: r.history.map(h => [h.iter ?? 0, h[k]])})), {ylabel: "validation"});
+    }
+  }
+  const live = r.progress && !r.progress.phase ? `<span class="chip running">training</span>` :
+               r.progress && r.progress.phase ? `<span class="chip running">${esc(r.progress.phase)}</span>` :
+               r.state === "done" ? `<span class="chip done">done</span>` : `<span class="chip queued">idle</span>`;
+  return `<div class="card"><div class="run-head"><h2>${esc(r.name)} ${live}</h2><span class="muted">${esc(r.kind)} · updated ${r.updated ? ago(r.updated) : "?"}</span></div>${body}</div>`;
+}
+
+async function refresh() {
+  let s;
+  try {
+    s = await (await fetch("/api/status", {cache: "no-store"})).json();
+  } catch (e) { $("dot").className = "dot stale"; $("ts").textContent = "server not reachable"; return; }
+  $("dot").className = "dot"; $("ts").textContent = "updated " + new Date(s.now * 1000).toLocaleTimeString();
+  $("goal").textContent = s.board.goal || "";
+  const g = s.gpu, y = s.sys;
+  $("tiles").innerHTML =
+    (g.error ? tile("GPU", "n/a", esc(g.error)) :
+      tile("GPU utilisation", g.util.toFixed(0) + "%", esc(g.name), g.util / 100) +
+      tile("GPU memory", (g.mem_used / 1024).toFixed(1) + " GB", `of ${(g.mem_total / 1024).toFixed(1)} GB`, g.mem_used / g.mem_total) +
+      tile("GPU temperature", g.temp.toFixed(0) + " °C", g.power ? g.power.toFixed(0) + " W" : "", g.temp / 95)) +
+    tile("Disk free", y.disk_free_gb.toFixed(1) + " GB", `of ${y.disk_total_gb.toFixed(0)} GB`, 1 - y.disk_free_gb / y.disk_total_gb) +
+    tile("RAM available", (y.ram_avail_gb || 0).toFixed(1) + " GB", `of ${(y.ram_total_gb || 0).toFixed(0)} GB`, 1 - (y.ram_avail_gb || 0) / (y.ram_total_gb || 1)) +
+    tile("CPU load", y.load[0].toFixed(1), `${y.cpus} threads`, y.load[0] / y.cpus);
+  $("jobs").innerHTML = s.jobs.length ? `<table><tr><th>PID</th><th>job</th><th>target</th><th>running for</th><th>CPU</th><th>RAM</th></tr>` +
+    s.jobs.map(j => `<tr><td>${j.pid}</td><td>${esc(j.module)}</td><td>${esc(j.target)}</td><td>${fmtDur(j.elapsed_s)}</td><td>${j.cpu.toFixed(0)}%</td><td>${j.rss_gb.toFixed(1)} GB</td></tr>`).join("") + `</table>`
+    : `<div class="muted">no training/data job running</div>`;
+  $("runs").innerHTML = s.runs.map(runCard).join("") || `<div class="card muted">no runs yet</div>`;
+  const b = s.board;
+  $("stages").innerHTML = `<table>${(b.stages || []).map(x => `<tr><td><span class="chip ${esc(x.status)}">${esc(x.status)}</span></td><td><b>${esc(x.name)}</b><div class="muted">${esc(x.detail)}</div></td></tr>`).join("")}</table>`;
+  $("team").innerHTML = `<table>${(b.team || []).map(x => `<tr><td><span class="chip ${esc(x.status)}">${esc(x.status)}</span></td><td><b>${esc(x.role)}</b> <span class="muted">· ${esc(x.who)}</span><div class="muted">${esc(x.summary)}</div></td></tr>`).join("")}</table>`;
+  $("results").innerHTML = `<table><tr><th>model</th><th>test set</th><th>metric</th><th>value</th></tr>${(b.results || []).map(x => `<tr><td>${esc(x.model)}</td><td>${esc(x.set)}</td><td>${esc(x.metric)}</td><td><b>${esc(x.value)}</b></td></tr>`).join("")}</table>
+    <div class="muted" style="margin-top:6px">board updated ${esc(b.updated || "")}</div>`;
+  const u = s.user_docs;
+  if (!u) { $("userdocs").innerHTML = `<div class="muted">no import yet</div>`; $("udmeta").textContent = ""; }
+  else {
+    const conn = u.connected ? `<span class="chip done">card connected</span>` : `<span class="chip queued">card not plugged in</span>`;
+    const w = u.watcher_alive ? `<span class="chip active">auto-import on</span>` : `<span class="chip failed">auto-import stopped</span>`;
+    $("udmeta").textContent = `card ${u.label}, folder /Image · checked ${ago(u.last_scan)}`;
+    $("userdocs").innerHTML = `<div class="kv">${conn} ${w}<div><b>${u.total}</b> photos imported</div><div><b>${u.test}</b> held out for testing</div>
+      <div><b>${u.pool}</b> for training / labelling</div>${u.last_import ? `<div>last new photo ${ago(u.last_import)}</div>` : ""}
+      ${u.failed && u.failed.length ? `<div style="color:var(--bad)">${u.failed.length} failed: ${esc(u.failed[0])}</div>` : ""}</div>
+      <div class="thumbs">${u.photos.map(p => `<a href="/userdocs/${esc(p.image)}" target="_blank" title="${esc(p.source)}"><img loading="lazy" src="/userdocs/${esc(p.thumb)}" alt="${esc(p.source)}">${p.split === "test" ? `<span class="chip queued">test</span>` : ""}</a>`).join("")}</div>`;
+  }
+  $("data").innerHTML = `<table>${(s.data_logs || []).map(x => `<tr><td><b>${esc(x.name)}</b><div><code>${esc(x.last)}</code></div></td><td class="muted">${ago(x.updated)}</td></tr>`).join("")}</table>`;
+}
+refresh();
+setInterval(refresh, 10000);
+</script>
+</body>
+</html>

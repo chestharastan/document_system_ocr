@@ -1,11 +1,19 @@
+# Core API + ONNX pipeline (CPU). This is all the default pipeline needs - no torch.
 fastapi
 uvicorn[standard]
-pydantic
-pydantic-settings
+pydantic>=2
+pydantic-settings>=2
 python-multipart
-doclayout_yolo
-ultralytics
-opencv-python
-Pillow
-torch
-huggingface_hub
+numpy
+opencv-python-headless
+onnxruntime            # CPU. For an NVIDIA GPU install onnxruntime-gpu instead (ORT_DEVICE=auto picks CUDA).
+pyclipper              # DB unclip (falls back to rectangle maths if missing)
+Pillow                 # image-header size check before decoding (decompression-bomb guard)
+
+# Tests
+pytest
+httpx
+
+# Optional legacy PyTorch stack (only for the *_pt / torch_* model kinds; also needed to export YOLO .pt -> ONNX):
+#   pip install -r requirements-torch.txt
+python-docx>=1.1

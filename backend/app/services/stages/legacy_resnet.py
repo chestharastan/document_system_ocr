@@ -1,8 +1,6 @@
 """
-app/services/recognizer.py
-
-Khmer OCR Recognizer — ResNet + BiLSTM + CTC
-Adapted from predict.py for FastAPI backend use.
+Legacy v1 Khmer OCR recogniser - ResNet + BiLSTM + CTC (PyTorch), formerly app/services/recognizer.py.
+Only imported lazily by stages/legacy_torch.py when the "torch_resnet_bilstm" model kind is selected.
 """
 
 import json
@@ -147,10 +145,12 @@ class KhmerRecognizer:
             model_dir: Directory containing best_model.pth (and optionally char.json)
             charset_path: Path to char.json (if not in model_dir)
         """
-        self.model_dir = Path(model_dir)
-        
-        # Resolve paths
-        self.model_path = self.model_dir / "best_model.pth"
+        model_dir = Path(model_dir)
+        if model_dir.is_file():  # a .pth file was given directly
+            self.model_dir, self.model_path = model_dir.parent, model_dir
+        else:
+            self.model_dir = model_dir
+            self.model_path = model_dir / "best_model.pth"
         self.charset_path = Path(charset_path) if charset_path else self.model_dir / "char.json"
         
         if not self.model_path.exists():
@@ -199,3 +199,19 @@ class KhmerRecognizer:
     def recognize_batch(self, images: list) -> list[str]:
         """Batch recognition for multiple images."""
         return [self.recognize(img) for img in images]
+
+    def recognize_with_conf(self, image) -> tuple[str, float]:
+        """Recognize one line -> (text, mean max-probability of the emitted symbols)."""
+        if isinstance(image, Image.Image) and image.mode != "L":
+            image = image.convert("L")
+        tensor = preprocess(image).to(self.device)
+        with torch.no_grad():
+            probs = self.model(tensor)[:, 0, :].exp().cpu()  # [T, C]
+        conf, ids = probs.max(dim=1)
+        chars, cs, prev = [], [], None
+        for idx, c in zip(ids.tolist(), conf.tolist()):
+            if idx != prev and idx != 0:
+                chars.append(self.idx2char.get(idx, "?"))
+                cs.append(c)
+            prev = idx
+        return "".join(chars), (sum(cs) / len(cs) if cs else 0.0)

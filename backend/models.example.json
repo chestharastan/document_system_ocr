@@ -1,0 +1,100 @@
+{
+  "schema": 2,
+  "defaults": {
+    "layout": "layout_yolo11s_v1_12cls",
+    "textdet": "db_ppocrv5_khmer_v1",
+    "rec": "crnn_m_v1"
+  },
+  "models": [
+    {
+      "id": "layout_yolo11s_v1_12cls",
+      "stage": "layout",
+      "kind": "yolo_onnx",
+      "file": "layout/layout_v1_12cls.onnx",
+      "version": "v1",
+      "label": "YOLO11s layout v1 (12 classes, ONNX)",
+      "sha256": "ba63720539569529d110a74047e12aec901439f610e74ff144f9a8654847e627",
+      "input_size": [
+        1024,
+        1024
+      ],
+      "classes": [
+        "text",
+        "title",
+        "list",
+        "table",
+        "figure",
+        "signature",
+        "stamp",
+        "logo",
+        "qr_barcode",
+        "handwriting",
+        "header_footer",
+        "formula"
+      ]
+    },
+    {
+      "id": "layout_yolo11s_v1_12cls_pt",
+      "stage": "layout",
+      "kind": "ultralytics_pt",
+      "file": "layout/layout_v1_12cls.pt",
+      "version": "v1",
+      "label": "YOLO11s layout v1 (12 classes, torch)",
+      "sha256": "b45f53c1349e14b32a5c9d16867a8c4ab74e7e6a88b356c1a89d0d2627b90ff3"
+    },
+    {
+      "id": "db_ppocrv5_khmer_v1",
+      "stage": "textdet",
+      "kind": "db_onnx",
+      "file": "textdet/db_v1.onnx",
+      "version": "v1",
+      "label": "DB PP-OCRv5 mobile, Khmer fine-tuned v1",
+      "sha256": "e2d2ff137899fc3f1c868e687710425b161f055207be2a3583fcad8db2f6e94d",
+      "input_size": [
+        null,
+        null
+      ]
+    },
+    {
+      "id": "db_ppocrv5_orig",
+      "stage": "textdet",
+      "kind": "db_onnx",
+      "file": "textdet/db_ppocrv5_orig.onnx",
+      "version": "v0",
+      "label": "DB PP-OCRv5 mobile (original)",
+      "sha256": "a431985659dc921974177a95adcfbb90fd9e51989a5e04d70d0b75f597b6e61d",
+      "input_size": [
+        null,
+        null
+      ]
+    },
+    {
+      "id": "crnn_m_v1",
+      "stage": "rec",
+      "kind": "crnn_onnx",
+      "file": "rec/crnn_m_v1.onnx",
+      "version": "v1",
+      "label": "CRNN-CTC m v1 (fp32)",
+      "sha256": "8add76fd3711901f8fc6579707af11a1cba9454ae57923d11d93d8ca893b784d",
+      "vocab": "rec/crnn_m_v1.vocab.json",
+      "input_size": [
+        48,
+        null
+      ]
+    },
+    {
+      "id": "crnn_m_v1_int8",
+      "stage": "rec",
+      "kind": "crnn_onnx",
+      "file": "rec/crnn_m_v1_int8.onnx",
+      "version": "v1",
+      "label": "CRNN-CTC m v1 (int8)",
+      "sha256": "28a2672b09fdc16479f3f9f06bcdd9a41fdeec33d948d7fa314e30b9aa19493a",
+      "vocab": "rec/crnn_m_v1.vocab.json",
+      "input_size": [
+        48,
+        null
+      ]
+    }
+  ]
+}

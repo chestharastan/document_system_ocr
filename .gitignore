@@ -87,3 +87,18 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# =========================
+# Local-only (v2/v3 work)
+# =========================
+# model weights live on Hugging Face (see README)
+web/models/
+*.onnx
+# hand backups made while editing
+*.pre_*
+*.bak*
+*_backup.py.txt
+# test pages that may contain real documents
+web/_test/
+# separate repo (chestharastan/ThaFlow-OCR)
+web/

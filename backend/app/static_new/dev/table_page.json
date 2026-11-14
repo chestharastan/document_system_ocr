@@ -1,0 +1,3209 @@
+{
+ "page_id": "0de00000000000000000000000007ab1",
+ "index": 0,
+ "filename": "table_page.png",
+ "image_url": "dev/table_page.png",
+ "width": 1240,
+ "height": 1754,
+ "blocks": [
+  {
+   "id": "b1",
+   "type": "paragraph",
+   "label": "title",
+   "cls": "title",
+   "cls_id": 0,
+   "display": "Title",
+   "color": "#3c78d8",
+   "model_label": "title",
+   "score": 0.95,
+   "source": "layout",
+   "reading_order": 1,
+   "box": {
+    "x": 366.5,
+    "y": 111,
+    "width": 507.0,
+    "height": 78
+   },
+   "lines": [
+    {
+     "box": {
+      "x": 366.5,
+      "y": 111,
+      "width": 507.0,
+      "height": 78
+     },
+     "text": "បញ្ជីវត្តមាន និងពិន្ទុសិស្ស",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 1,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 159,
+     "core_h": 22.0,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    }
+   ],
+   "crop": null,
+   "text": "បញ្ជីវត្តមាន និងពិន្ទុសិស្ស",
+   "recognized": true,
+   "font_px": 40,
+   "font_src": "model",
+   "align": "center",
+   "relabel": null,
+   "font": {
+    "family": "Khmer OS",
+    "confidence": 0.9,
+    "weight": "regular",
+    "slant": "upright"
+   },
+   "text_color": "#1a1a1a",
+   "bold": false,
+   "paragraphs": [
+    {
+     "indent_level": 0,
+     "bullet": null,
+     "text": "បញ្ជីវត្តមាន និងពិន្ទុសិស្ស",
+     "lines": [
+      1
+     ],
+     "runs": [
+      {
+       "text": "បញ្ជីវត្តមាន និងពិន្ទុសិស្ស",
+       "bold": false
+      }
+     ],
+     "first_line_indent": false
+    }
+   ]
+  },
+  {
+   "id": "b2",
+   "type": "paragraph",
+   "label": "text",
+   "cls": "text",
+   "cls_id": 0,
+   "display": "Text",
+   "color": "#3c78d8",
+   "model_label": "text",
+   "score": 0.95,
+   "source": "layout",
+   "reading_order": 2,
+   "box": {
+    "x": 98,
+    "y": 205,
+    "width": 371,
+    "height": 83
+   },
+   "lines": [
+    {
+     "box": {
+      "x": 98,
+      "y": 205,
+      "width": 371,
+      "height": 37
+     },
+     "text": "ថ្នាក់ទី៧ក ឆ្នាំសិក្សា ២០២៥-២០២៦",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 1,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 231,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 98,
+      "y": 243,
+      "width": 355,
+      "height": 45
+     },
+     "text": "គ្រូបន្ទុកថ្នាក់៖ លោកគ្រូ សុខ វណ្ណា",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 2,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 269,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    }
+   ],
+   "crop": null,
+   "text": "ថ្នាក់ទី៧ក ឆ្នាំសិក្សា ២០២៥-២០២៦\nគ្រូបន្ទុកថ្នាក់៖ លោកគ្រូ សុខ វណ្ណា",
+   "recognized": true,
+   "font_px": 24,
+   "font_src": "model",
+   "align": "left",
+   "relabel": null,
+   "font": {
+    "family": "Khmer OS",
+    "confidence": 0.9,
+    "weight": "regular",
+    "slant": "upright"
+   },
+   "text_color": "#1a1a1a",
+   "bold": false,
+   "paragraphs": [
+    {
+     "indent_level": 0,
+     "bullet": null,
+     "text": "ថ្នាក់ទី៧ក ឆ្នាំសិក្សា ២០២៥-២០២៦",
+     "lines": [
+      1
+     ],
+     "runs": [
+      {
+       "text": "ថ្នាក់ទី៧ក ឆ្នាំសិក្សា ២០២៥-២០២៦",
+       "bold": false
+      }
+     ],
+     "first_line_indent": false
+    },
+    {
+     "indent_level": 0,
+     "bullet": null,
+     "text": "គ្រូបន្ទុកថ្នាក់៖ លោកគ្រូ សុខ វណ្ណា",
+     "lines": [
+      2
+     ],
+     "runs": [
+      {
+       "text": "គ្រូបន្ទុកថ្នាក់៖ លោកគ្រូ សុខ វណ្ណា",
+       "bold": false
+      }
+     ],
+     "first_line_indent": false
+    }
+   ]
+  },
+  {
+   "id": "b3",
+   "type": "table",
+   "label": "table",
+   "cls": "table",
+   "cls_id": 4,
+   "display": "Table",
+   "color": "#8e44ad",
+   "model_label": "table",
+   "score": 0.93,
+   "source": "layout",
+   "reading_order": 3,
+   "box": {
+    "x": 100,
+    "y": 300,
+    "width": 1040.0,
+    "height": 280
+   },
+   "lines": [
+    {
+     "box": {
+      "x": 122.1,
+      "y": 334.5,
+      "width": 39.0,
+      "height": 19.0
+     },
+     "text": "ល.រ",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 1,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 351.5,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 191.2,
+      "y": 328.0,
+      "width": 108.0,
+      "height": 32.0
+     },
+     "text": "ឈ្មោះសិស្ស",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 2,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 352.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 589.6,
+      "y": 334.5,
+      "width": 40.0,
+      "height": 19.0
+     },
+     "text": "ភេទ",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 3,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 351.5,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 894.7,
+      "y": 303.0,
+      "width": 33.0,
+      "height": 38.0
+     },
+     "text": "ពិន្ទុ",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 4,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 327.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 754.3,
+      "y": 349.5,
+      "width": 85.0,
+      "height": 33.0
+     },
+     "text": "ភាសាខ្មែរ",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 5,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 374.5,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 977.1,
+      "y": 350.0,
+      "width": 97.0,
+      "height": 32.0
+     },
+     "text": "គណិតវិទ្យា",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 6,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 374.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 130.6,
+      "y": 402.0,
+      "width": 22.0,
+      "height": 20.0
+     },
+     "text": "១",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 7,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 420.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 191.2,
+      "y": 397.5,
+      "width": 111.0,
+      "height": 29.0
+     },
+     "text": "សុខ សុភា",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 8,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 415.5,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 589.6,
+      "y": 394.5,
+      "width": 40.0,
+      "height": 35.0
+     },
+     "text": "ស្រី",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 9,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 420.5,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 863.2,
+      "y": 400.0,
+      "width": 40.0,
+      "height": 24.0
+     },
+     "text": "៨៥",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 10,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 422.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 1090.0,
+      "y": 400.0,
+      "width": 42.0,
+      "height": 24.0
+     },
+     "text": "៩២",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 11,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 422.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 130.1,
+      "y": 448.0,
+      "width": 23.0,
+      "height": 24.0
+     },
+     "text": "២",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 12,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 470.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 191.2,
+      "y": 446.0,
+      "width": 102.0,
+      "height": 28.0
+     },
+     "text": "ចាន់ ដារ៉ា",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 13,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 472.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 580.1,
+      "y": 442.5,
+      "width": 59.0,
+      "height": 35.0
+     },
+     "text": "ប្រុស",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 14,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 460.5,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 859.2,
+      "y": 448.0,
+      "width": 44.0,
+      "height": 24.0
+     },
+     "text": "៧៨",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 15,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 470.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 128.1,
+      "y": 498.0,
+      "width": 27.0,
+      "height": 20.0
+     },
+     "text": "៣",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 16,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 516.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 191.2,
+      "y": 494.0,
+      "width": 84.0,
+      "height": 28.0
+     },
+     "text": "លី មេង",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 17,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 520.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 580.1,
+      "y": 490.5,
+      "width": 59.0,
+      "height": 35.0
+     },
+     "text": "ប្រុស",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 18,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 508.5,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 863.2,
+      "y": 496.0,
+      "width": 40.0,
+      "height": 24.0
+     },
+     "text": "៩១",
+     "confidence": 0.62,
+     "score": 0.9,
+     "reading_order": 19,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 518.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 1092.0,
+      "y": 496.0,
+      "width": 40.0,
+      "height": 24.0
+     },
+     "text": "៨៨",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 20,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 518.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 627.4,
+      "y": 543.5,
+      "width": 47.0,
+      "height": 25.0
+     },
+     "text": "សរុប",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 21,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 560.5,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 848.2,
+      "y": 545.0,
+      "width": 55.0,
+      "height": 22.0
+     },
+     "text": "២៥៤",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 22,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 565.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 1081.0,
+      "y": 545.0,
+      "width": 51.0,
+      "height": 22.0
+     },
+     "text": "១៨០",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 23,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 565.0,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    }
+   ],
+   "crop": null,
+   "text": "ល.រ\tឈ្មោះសិស្ស\tភេទ\tពិន្ទុ\t\n\t\t\tភាសាខ្មែរ\tគណិតវិទ្យា\n១\tសុខ សុភា\tស្រី\t៨៥\t៩២\n២\tចាន់ ដារ៉ា\tប្រុស\t៧៨\t\n៣\tលី មេង\tប្រុស\t៩១\t៨៨\nសរុប\t\t\t២៥៤\t១៨០",
+   "recognized": true,
+   "font_px": 24,
+   "font_src": "model",
+   "align": "left",
+   "relabel": null,
+   "font": {
+    "family": "Khmer OS",
+    "confidence": 0.88,
+    "weight": "regular",
+    "slant": "upright"
+   },
+   "text_color": "#1a1a1a",
+   "bold": false,
+   "paragraphs": [],
+   "table": {
+    "rows": [
+     [
+      300,
+      344
+     ],
+     [
+      344,
+      388
+     ],
+     [
+      388,
+      436
+     ],
+     [
+      436,
+      484
+     ],
+     [
+      484,
+      532
+     ],
+     [
+      532,
+      580
+     ]
+    ],
+    "cols": [
+     [
+      100,
+      183.2
+     ],
+     [
+      183.2,
+      536.8
+     ],
+     [
+      536.8,
+      682.4
+     ],
+     [
+      682.4,
+      911.2
+     ],
+     [
+      911.2,
+      1140.0
+     ]
+    ],
+    "header_rows": 2,
+    "borders": "grid",
+    "cells": [
+     {
+      "r": 0,
+      "c": 0,
+      "rs": 2,
+      "cs": 1,
+      "box": [
+       100,
+       300,
+       183.2,
+       388
+      ],
+      "header": true,
+      "text": "ល.រ",
+      "lines": [
+       0
+      ],
+      "align": "c",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 0,
+      "c": 1,
+      "rs": 2,
+      "cs": 1,
+      "box": [
+       183.2,
+       300,
+       536.8,
+       388
+      ],
+      "header": true,
+      "text": "ឈ្មោះសិស្ស",
+      "lines": [
+       1
+      ],
+      "align": "l",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 0,
+      "c": 2,
+      "rs": 2,
+      "cs": 1,
+      "box": [
+       536.8,
+       300,
+       682.4,
+       388
+      ],
+      "header": true,
+      "text": "ភេទ",
+      "lines": [
+       2
+      ],
+      "align": "c",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 0,
+      "c": 3,
+      "rs": 1,
+      "cs": 2,
+      "box": [
+       682.4,
+       300,
+       1140.0,
+       344
+      ],
+      "header": true,
+      "text": "ពិន្ទុ",
+      "lines": [
+       3
+      ],
+      "align": "c",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 1,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       682.4,
+       344,
+       911.2,
+       388
+      ],
+      "header": true,
+      "text": "ភាសាខ្មែរ",
+      "lines": [
+       4
+      ],
+      "align": "c",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 1,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       911.2,
+       344,
+       1140.0,
+       388
+      ],
+      "header": true,
+      "text": "គណិតវិទ្យា",
+      "lines": [
+       5
+      ],
+      "align": "c",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 2,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       100,
+       388,
+       183.2,
+       436
+      ],
+      "header": false,
+      "text": "១",
+      "lines": [
+       6
+      ],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 2,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       183.2,
+       388,
+       536.8,
+       436
+      ],
+      "header": false,
+      "text": "សុខ សុភា",
+      "lines": [
+       7
+      ],
+      "align": "l",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 2,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       536.8,
+       388,
+       682.4,
+       436
+      ],
+      "header": false,
+      "text": "ស្រី",
+      "lines": [
+       8
+      ],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 2,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       682.4,
+       388,
+       911.2,
+       436
+      ],
+      "header": false,
+      "text": "៨៥",
+      "lines": [
+       9
+      ],
+      "align": "r",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 2,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       911.2,
+       388,
+       1140.0,
+       436
+      ],
+      "header": false,
+      "text": "៩២",
+      "lines": [
+       10
+      ],
+      "align": "r",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 3,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       100,
+       436,
+       183.2,
+       484
+      ],
+      "header": false,
+      "text": "២",
+      "lines": [
+       11
+      ],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 3,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       183.2,
+       436,
+       536.8,
+       484
+      ],
+      "header": false,
+      "text": "ចាន់ ដារ៉ា",
+      "lines": [
+       12
+      ],
+      "align": "l",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 3,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       536.8,
+       436,
+       682.4,
+       484
+      ],
+      "header": false,
+      "text": "ប្រុស",
+      "lines": [
+       13
+      ],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 3,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       682.4,
+       436,
+       911.2,
+       484
+      ],
+      "header": false,
+      "text": "៧៨",
+      "lines": [
+       14
+      ],
+      "align": "r",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 3,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       911.2,
+       436,
+       1140.0,
+       484
+      ],
+      "header": false,
+      "text": "",
+      "lines": [],
+      "align": "r",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 4,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       100,
+       484,
+       183.2,
+       532
+      ],
+      "header": false,
+      "text": "៣",
+      "lines": [
+       15
+      ],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 4,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       183.2,
+       484,
+       536.8,
+       532
+      ],
+      "header": false,
+      "text": "លី មេង",
+      "lines": [
+       16
+      ],
+      "align": "l",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 4,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       536.8,
+       484,
+       682.4,
+       532
+      ],
+      "header": false,
+      "text": "ប្រុស",
+      "lines": [
+       17
+      ],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 4,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       682.4,
+       484,
+       911.2,
+       532
+      ],
+      "header": false,
+      "text": "៩១",
+      "lines": [
+       18
+      ],
+      "align": "r",
+      "bold": false,
+      "confidence": 0.62
+     },
+     {
+      "r": 4,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       911.2,
+       484,
+       1140.0,
+       532
+      ],
+      "header": false,
+      "text": "៨៨",
+      "lines": [
+       19
+      ],
+      "align": "r",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 5,
+      "c": 0,
+      "rs": 1,
+      "cs": 3,
+      "box": [
+       100,
+       532,
+       682.4,
+       580
+      ],
+      "header": false,
+      "text": "សរុប",
+      "lines": [
+       20
+      ],
+      "align": "r",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 5,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       682.4,
+       532,
+       911.2,
+       580
+      ],
+      "header": false,
+      "text": "២៥៤",
+      "lines": [
+       21
+      ],
+      "align": "r",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 5,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       911.2,
+       532,
+       1140.0,
+       580
+      ],
+      "header": false,
+      "text": "១៨០",
+      "lines": [
+       22
+      ],
+      "align": "r",
+      "bold": true,
+      "confidence": 0.95
+     }
+    ],
+    "source": "tsr_yolo11n_v1",
+    "confidence": 0.91
+   }
+  },
+  {
+   "id": "b4",
+   "type": "paragraph",
+   "label": "text",
+   "cls": "text",
+   "cls_id": 0,
+   "display": "Text",
+   "color": "#3c78d8",
+   "model_label": "text",
+   "score": 0.95,
+   "source": "layout",
+   "reading_order": 4,
+   "box": {
+    "x": 98,
+    "y": 625,
+    "width": 587,
+    "height": 81
+   },
+   "lines": [
+    {
+     "box": {
+      "x": 98,
+      "y": 625,
+      "width": 587,
+      "height": 45
+     },
+     "text": "កំណត់សម្គាល់៖ ពិន្ទុខាងលើគឺជាពិន្ទុប្រចាំឆមាសទីមួយ។",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 1,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 651,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 98,
+      "y": 662,
+      "width": 576,
+      "height": 44
+     },
+     "text": "សិស្សដែលអវត្តមានត្រូវប្រឡងសងនៅសប្តាហ៍ក្រោយ។",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 2,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 689,
+     "core_h": 13.2,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    }
+   ],
+   "crop": null,
+   "text": "កំណត់សម្គាល់៖ ពិន្ទុខាងលើគឺជាពិន្ទុប្រចាំឆមាសទីមួយ។\nសិស្សដែលអវត្តមានត្រូវប្រឡងសងនៅសប្តាហ៍ក្រោយ។",
+   "recognized": true,
+   "font_px": 24,
+   "font_src": "model",
+   "align": "left",
+   "relabel": null,
+   "font": {
+    "family": "Khmer OS",
+    "confidence": 0.9,
+    "weight": "regular",
+    "slant": "upright"
+   },
+   "text_color": "#1a1a1a",
+   "bold": false,
+   "paragraphs": [
+    {
+     "indent_level": 0,
+     "bullet": null,
+     "text": "កំណត់សម្គាល់៖ ពិន្ទុខាងលើគឺជាពិន្ទុប្រចាំឆមាសទីមួយ។",
+     "lines": [
+      1
+     ],
+     "runs": [
+      {
+       "text": "កំណត់សម្គាល់៖ ពិន្ទុខាងលើគឺជាពិន្ទុប្រចាំឆមាសទីមួយ។",
+       "bold": false
+      }
+     ],
+     "first_line_indent": false
+    },
+    {
+     "indent_level": 0,
+     "bullet": null,
+     "text": "សិស្សដែលអវត្តមានត្រូវប្រឡងសងនៅសប្តាហ៍ក្រោយ។",
+     "lines": [
+      2
+     ],
+     "runs": [
+      {
+       "text": "សិស្សដែលអវត្តមានត្រូវប្រឡងសងនៅសប្តាហ៍ក្រោយ។",
+       "bold": false
+      }
+     ],
+     "first_line_indent": false
+    }
+   ]
+  },
+  {
+   "id": "b5",
+   "type": "table",
+   "label": "table",
+   "cls": "table",
+   "cls_id": 4,
+   "display": "Table",
+   "color": "#8e44ad",
+   "model_label": "table",
+   "score": 0.93,
+   "source": "layout",
+   "reading_order": 5,
+   "box": {
+    "x": 100,
+    "y": 730,
+    "width": 600.0,
+    "height": 168
+   },
+   "lines": [
+    {
+     "box": {
+      "x": 108,
+      "y": 741.0,
+      "width": 52,
+      "height": 20.0
+     },
+     "text": "Item",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 1,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 759.0,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 439.5,
+      "y": 738.5,
+      "width": 41.0,
+      "height": 25.0
+     },
+     "text": "Qty",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 2,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 756.5,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 634.0,
+      "y": 740.5,
+      "width": 58.0,
+      "height": 21.0
+     },
+     "text": "Price",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 3,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 759.5,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 108,
+      "y": 780.0,
+      "width": 108,
+      "height": 26.0
+     },
+     "text": "Rice 25 kg",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 4,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 798.0,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 452.0,
+      "y": 783.0,
+      "width": 16.0,
+      "height": 20.0
+     },
+     "text": "2",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 5,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 801.0,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 614.0,
+      "y": 781.0,
+      "width": 78.0,
+      "height": 24.0
+     },
+     "text": "$ 45.00",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 6,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 800.0,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 108,
+      "y": 824.5,
+      "width": 110,
+      "height": 21.0
+     },
+     "text": "Fish sauce",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 7,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 842.5,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 452.0,
+      "y": 824.5,
+      "width": 16.0,
+      "height": 21.0
+     },
+     "text": "6",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 8,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 842.5,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 614.0,
+      "y": 823.0,
+      "width": 78.0,
+      "height": 24.0
+     },
+     "text": "$ 12.50",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 9,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 842.0,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 108,
+      "y": 866.5,
+      "width": 58,
+      "height": 21.0
+     },
+     "text": "Total",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 10,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 885.5,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    },
+    {
+     "box": {
+      "x": 615.0,
+      "y": 864.5,
+      "width": 77.0,
+      "height": 25.0
+     },
+     "text": "$ 57.50",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 11,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 885.5,
+     "core_h": 12.1,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "bold",
+      "slant": "upright"
+     },
+     "bold": true,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    }
+   ],
+   "crop": null,
+   "text": "Item\tQty\tPrice\nRice 25 kg\t2\t$ 45.00\nFish sauce\t6\t$ 12.50\nTotal\t\t$ 57.50",
+   "recognized": true,
+   "font_px": 22,
+   "font_src": "model",
+   "align": "left",
+   "relabel": null,
+   "font": {
+    "family": "Khmer OS",
+    "confidence": 0.88,
+    "weight": "regular",
+    "slant": "upright"
+   },
+   "text_color": "#1a1a1a",
+   "bold": false,
+   "paragraphs": [],
+   "table": {
+    "rows": [
+     [
+      730,
+      772
+     ],
+     [
+      772,
+      814
+     ],
+     [
+      814,
+      856
+     ],
+     [
+      856,
+      898
+     ]
+    ],
+    "cols": [
+     [
+      100,
+      400.0
+     ],
+     [
+      400.0,
+      520.0
+     ],
+     [
+      520.0,
+      700.0
+     ]
+    ],
+    "header_rows": 1,
+    "borders": "none",
+    "cells": [
+     {
+      "r": 0,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       100,
+       730,
+       400.0,
+       772
+      ],
+      "header": true,
+      "text": "Item",
+      "lines": [
+       0
+      ],
+      "align": "l",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 0,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       400.0,
+       730,
+       520.0,
+       772
+      ],
+      "header": true,
+      "text": "Qty",
+      "lines": [
+       1
+      ],
+      "align": "c",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 0,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       520.0,
+       730,
+       700.0,
+       772
+      ],
+      "header": true,
+      "text": "Price",
+      "lines": [
+       2
+      ],
+      "align": "r",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 1,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       100,
+       772,
+       400.0,
+       814
+      ],
+      "header": false,
+      "text": "Rice 25 kg",
+      "lines": [
+       3
+      ],
+      "align": "l",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 1,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       400.0,
+       772,
+       520.0,
+       814
+      ],
+      "header": false,
+      "text": "2",
+      "lines": [
+       4
+      ],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 1,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       520.0,
+       772,
+       700.0,
+       814
+      ],
+      "header": false,
+      "text": "$ 45.00",
+      "lines": [
+       5
+      ],
+      "align": "r",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 2,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       100,
+       814,
+       400.0,
+       856
+      ],
+      "header": false,
+      "text": "Fish sauce",
+      "lines": [
+       6
+      ],
+      "align": "l",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 2,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       400.0,
+       814,
+       520.0,
+       856
+      ],
+      "header": false,
+      "text": "6",
+      "lines": [
+       7
+      ],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 2,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       520.0,
+       814,
+       700.0,
+       856
+      ],
+      "header": false,
+      "text": "$ 12.50",
+      "lines": [
+       8
+      ],
+      "align": "r",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 3,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       100,
+       856,
+       400.0,
+       898
+      ],
+      "header": false,
+      "text": "Total",
+      "lines": [
+       9
+      ],
+      "align": "l",
+      "bold": true,
+      "confidence": 0.95
+     },
+     {
+      "r": 3,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       400.0,
+       856,
+       520.0,
+       898
+      ],
+      "header": false,
+      "text": "",
+      "lines": [],
+      "align": "c",
+      "bold": false,
+      "confidence": 0.95
+     },
+     {
+      "r": 3,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "box": [
+       520.0,
+       856,
+       700.0,
+       898
+      ],
+      "header": false,
+      "text": "$ 57.50",
+      "lines": [
+       10
+      ],
+      "align": "r",
+      "bold": true,
+      "confidence": 0.95
+     }
+    ],
+    "source": "tsr_yolo11n_v1",
+    "confidence": 0.78
+   }
+  },
+  {
+   "id": "b6",
+   "type": "paragraph",
+   "label": "page_number",
+   "cls": "page_number",
+   "cls_id": 0,
+   "display": "Page_Number",
+   "color": "#3c78d8",
+   "model_label": "page_number",
+   "score": 0.95,
+   "source": "layout",
+   "reading_order": 6,
+   "box": {
+    "x": 588.5,
+    "y": 1663,
+    "width": 63.0,
+    "height": 25
+   },
+   "lines": [
+    {
+     "box": {
+      "x": 588.5,
+      "y": 1663,
+      "width": 63.0,
+      "height": 25
+     },
+     "text": "ទំព័រ ១",
+     "confidence": 0.97,
+     "score": 0.9,
+     "reading_order": 1,
+     "indent_level": 0,
+     "indent": 0,
+     "tab": false,
+     "bullet": null,
+     "bullet_box": null,
+     "baseline": 1686,
+     "core_h": 11.0,
+     "font": {
+      "family": "Khmer OS",
+      "confidence": 0.9,
+      "weight": "regular",
+      "slant": "upright"
+     },
+     "bold": false,
+     "spans": [],
+     "text_color": "#1a1a1a"
+    }
+   ],
+   "crop": null,
+   "text": "ទំព័រ ១",
+   "recognized": true,
+   "font_px": 20,
+   "font_src": "model",
+   "align": "center",
+   "relabel": null,
+   "font": {
+    "family": "Khmer OS",
+    "confidence": 0.9,
+    "weight": "regular",
+    "slant": "upright"
+   },
+   "text_color": "#1a1a1a",
+   "bold": false,
+   "paragraphs": [
+    {
+     "indent_level": 0,
+     "bullet": null,
+     "text": "ទំព័រ ១",
+     "lines": [
+      1
+     ],
+     "runs": [
+      {
+       "text": "ទំព័រ ១",
+       "bold": false
+      }
+     ],
+     "first_line_indent": false
+    }
+   ]
+  }
+ ],
+ "layout": {
+  "width": 1240,
+  "height": 1754,
+  "margins": {
+   "left": 100.0,
+   "right": 100.0,
+   "top": 90.0,
+   "bottom": 90.0
+  },
+  "zones": []
+ },
+ "document": {
+  "width": 1240,
+  "height": 1754,
+  "margins": {
+   "left": 100.0,
+   "right": 100.0,
+   "top": 90.0,
+   "bottom": 90.0
+  },
+  "elements": [
+   {
+    "block": "b1",
+    "role": "title",
+    "align": "center",
+    "style": {
+     "font_px": 40,
+     "family": "Khmer OS",
+     "weight": "regular",
+     "slant": "upright",
+     "heavy": false,
+     "color": "#1a1a1a",
+     "size_model": true
+    },
+    "box": [
+     366.5,
+     111,
+     507.0,
+     78
+    ],
+    "runs": [
+     {
+      "text": "បញ្ជីវត្តមាន និងពិន្ទុសិស្ស",
+      "bold": false
+     }
+    ],
+    "text": "បញ្ជីវត្តមាន និងពិន្ទុសិស្ស",
+    "level": 0,
+    "lines": [
+     1
+    ],
+    "low": false,
+    "type": "heading",
+    "heading": 1
+   },
+   {
+    "block": "b2",
+    "role": "text",
+    "align": "left",
+    "style": {
+     "font_px": 24,
+     "family": "Khmer OS",
+     "weight": "regular",
+     "slant": "upright",
+     "heavy": false,
+     "color": "#1a1a1a",
+     "size_model": true
+    },
+    "box": [
+     98,
+     205,
+     371,
+     83
+    ],
+    "runs": [
+     {
+      "text": "ថ្នាក់ទី៧ក ឆ្នាំសិក្សា ២០២៥-២០២៦",
+      "bold": false
+     }
+    ],
+    "text": "ថ្នាក់ទី៧ក ឆ្នាំសិក្សា ២០២៥-២០២៦",
+    "level": 0,
+    "lines": [
+     1
+    ],
+    "low": false,
+    "type": "paragraph",
+    "first_line_indent": false
+   },
+   {
+    "block": "b2",
+    "role": "text",
+    "align": "left",
+    "style": {
+     "font_px": 24,
+     "family": "Khmer OS",
+     "weight": "regular",
+     "slant": "upright",
+     "heavy": false,
+     "color": "#1a1a1a",
+     "size_model": true
+    },
+    "box": [
+     98,
+     205,
+     371,
+     83
+    ],
+    "runs": [
+     {
+      "text": "គ្រូបន្ទុកថ្នាក់៖ លោកគ្រូ សុខ វណ្ណា",
+      "bold": false
+     }
+    ],
+    "text": "គ្រូបន្ទុកថ្នាក់៖ លោកគ្រូ សុខ វណ្ណា",
+    "level": 0,
+    "lines": [
+     2
+    ],
+    "low": false,
+    "type": "paragraph",
+    "first_line_indent": false
+   },
+   {
+    "block": "b3",
+    "role": "table",
+    "align": "left",
+    "style": {
+     "font_px": 24,
+     "family": "Khmer OS",
+     "weight": "regular",
+     "slant": "upright",
+     "heavy": false,
+     "color": "#1a1a1a",
+     "size_model": true
+    },
+    "box": [
+     100,
+     300,
+     1040.0,
+     280
+    ],
+    "type": "table",
+    "rows": 6,
+    "cols": 5,
+    "header_rows": 2,
+    "borders": "grid",
+    "cells": [
+     {
+      "r": 0,
+      "c": 0,
+      "rs": 2,
+      "cs": 1,
+      "header": true,
+      "align": "c",
+      "bold": true,
+      "text": "ល.រ",
+      "runs": [
+       {
+        "text": "ល.រ",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 0,
+      "c": 1,
+      "rs": 2,
+      "cs": 1,
+      "header": true,
+      "align": "l",
+      "bold": true,
+      "text": "ឈ្មោះសិស្ស",
+      "runs": [
+       {
+        "text": "ឈ្មោះសិស្ស",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 0,
+      "c": 2,
+      "rs": 2,
+      "cs": 1,
+      "header": true,
+      "align": "c",
+      "bold": true,
+      "text": "ភេទ",
+      "runs": [
+       {
+        "text": "ភេទ",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 0,
+      "c": 3,
+      "rs": 1,
+      "cs": 2,
+      "header": true,
+      "align": "c",
+      "bold": true,
+      "text": "ពិន្ទុ",
+      "runs": [
+       {
+        "text": "ពិន្ទុ",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 1,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "header": true,
+      "align": "c",
+      "bold": true,
+      "text": "ភាសាខ្មែរ",
+      "runs": [
+       {
+        "text": "ភាសាខ្មែរ",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 1,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "header": true,
+      "align": "c",
+      "bold": true,
+      "text": "គណិតវិទ្យា",
+      "runs": [
+       {
+        "text": "គណិតវិទ្យា",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 2,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "១",
+      "runs": [
+       {
+        "text": "១",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 2,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "l",
+      "bold": false,
+      "text": "សុខ សុភា",
+      "runs": [
+       {
+        "text": "សុខ សុភា",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 2,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "ស្រី",
+      "runs": [
+       {
+        "text": "ស្រី",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 2,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": false,
+      "text": "៨៥",
+      "runs": [
+       {
+        "text": "៨៥",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 2,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": false,
+      "text": "៩២",
+      "runs": [
+       {
+        "text": "៩២",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 3,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "២",
+      "runs": [
+       {
+        "text": "២",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 3,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "l",
+      "bold": false,
+      "text": "ចាន់ ដារ៉ា",
+      "runs": [
+       {
+        "text": "ចាន់ ដារ៉ា",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 3,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "ប្រុស",
+      "runs": [
+       {
+        "text": "ប្រុស",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 3,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": false,
+      "text": "៧៨",
+      "runs": [
+       {
+        "text": "៧៨",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 3,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": false,
+      "text": "",
+      "runs": [],
+      "low": false
+     },
+     {
+      "r": 4,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "៣",
+      "runs": [
+       {
+        "text": "៣",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 4,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "l",
+      "bold": false,
+      "text": "លី មេង",
+      "runs": [
+       {
+        "text": "លី មេង",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 4,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "ប្រុស",
+      "runs": [
+       {
+        "text": "ប្រុស",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 4,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": false,
+      "text": "៩១",
+      "runs": [
+       {
+        "text": "៩១",
+        "bold": false
+       }
+      ],
+      "low": true
+     },
+     {
+      "r": 4,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": false,
+      "text": "៨៨",
+      "runs": [
+       {
+        "text": "៨៨",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 5,
+      "c": 0,
+      "rs": 1,
+      "cs": 3,
+      "header": false,
+      "align": "r",
+      "bold": true,
+      "text": "សរុប",
+      "runs": [
+       {
+        "text": "សរុប",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 5,
+      "c": 3,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": true,
+      "text": "២៥៤",
+      "runs": [
+       {
+        "text": "២៥៤",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 5,
+      "c": 4,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": true,
+      "text": "១៨០",
+      "runs": [
+       {
+        "text": "១៨០",
+        "bold": true
+       }
+      ],
+      "low": false
+     }
+    ],
+    "col_widths": [
+     0.08,
+     0.34,
+     0.14,
+     0.22,
+     0.22
+    ],
+    "low": true
+   },
+   {
+    "block": "b4",
+    "role": "text",
+    "align": "left",
+    "style": {
+     "font_px": 24,
+     "family": "Khmer OS",
+     "weight": "regular",
+     "slant": "upright",
+     "heavy": false,
+     "color": "#1a1a1a",
+     "size_model": true
+    },
+    "box": [
+     98,
+     625,
+     587,
+     81
+    ],
+    "runs": [
+     {
+      "text": "កំណត់សម្គាល់៖ ពិន្ទុខាងលើគឺជាពិន្ទុប្រចាំឆមាសទីមួយ។",
+      "bold": false
+     }
+    ],
+    "text": "កំណត់សម្គាល់៖ ពិន្ទុខាងលើគឺជាពិន្ទុប្រចាំឆមាសទីមួយ។",
+    "level": 0,
+    "lines": [
+     1
+    ],
+    "low": false,
+    "type": "paragraph",
+    "first_line_indent": false
+   },
+   {
+    "block": "b4",
+    "role": "text",
+    "align": "left",
+    "style": {
+     "font_px": 24,
+     "family": "Khmer OS",
+     "weight": "regular",
+     "slant": "upright",
+     "heavy": false,
+     "color": "#1a1a1a",
+     "size_model": true
+    },
+    "box": [
+     98,
+     625,
+     587,
+     81
+    ],
+    "runs": [
+     {
+      "text": "សិស្សដែលអវត្តមានត្រូវប្រឡងសងនៅសប្តាហ៍ក្រោយ។",
+      "bold": false
+     }
+    ],
+    "text": "សិស្សដែលអវត្តមានត្រូវប្រឡងសងនៅសប្តាហ៍ក្រោយ។",
+    "level": 0,
+    "lines": [
+     2
+    ],
+    "low": false,
+    "type": "paragraph",
+    "first_line_indent": false
+   },
+   {
+    "block": "b5",
+    "role": "table",
+    "align": "left",
+    "style": {
+     "font_px": 22,
+     "family": "Khmer OS",
+     "weight": "regular",
+     "slant": "upright",
+     "heavy": false,
+     "color": "#1a1a1a",
+     "size_model": true
+    },
+    "box": [
+     100,
+     730,
+     600.0,
+     168
+    ],
+    "type": "table",
+    "rows": 4,
+    "cols": 3,
+    "header_rows": 1,
+    "borders": "none",
+    "cells": [
+     {
+      "r": 0,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "header": true,
+      "align": "l",
+      "bold": true,
+      "text": "Item",
+      "runs": [
+       {
+        "text": "Item",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 0,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "header": true,
+      "align": "c",
+      "bold": true,
+      "text": "Qty",
+      "runs": [
+       {
+        "text": "Qty",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 0,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "header": true,
+      "align": "r",
+      "bold": true,
+      "text": "Price",
+      "runs": [
+       {
+        "text": "Price",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 1,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "l",
+      "bold": false,
+      "text": "Rice 25 kg",
+      "runs": [
+       {
+        "text": "Rice 25 kg",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 1,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "2",
+      "runs": [
+       {
+        "text": "2",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 1,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": false,
+      "text": "$ 45.00",
+      "runs": [
+       {
+        "text": "$ 45.00",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 2,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "l",
+      "bold": false,
+      "text": "Fish sauce",
+      "runs": [
+       {
+        "text": "Fish sauce",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 2,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "6",
+      "runs": [
+       {
+        "text": "6",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 2,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": false,
+      "text": "$ 12.50",
+      "runs": [
+       {
+        "text": "$ 12.50",
+        "bold": false
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 3,
+      "c": 0,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "l",
+      "bold": true,
+      "text": "Total",
+      "runs": [
+       {
+        "text": "Total",
+        "bold": true
+       }
+      ],
+      "low": false
+     },
+     {
+      "r": 3,
+      "c": 1,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "c",
+      "bold": false,
+      "text": "",
+      "runs": [],
+      "low": false
+     },
+     {
+      "r": 3,
+      "c": 2,
+      "rs": 1,
+      "cs": 1,
+      "header": false,
+      "align": "r",
+      "bold": true,
+      "text": "$ 57.50",
+      "runs": [
+       {
+        "text": "$ 57.50",
+        "bold": true
+       }
+      ],
+      "low": false
+     }
+    ],
+    "col_widths": [
+     0.5,
+     0.2,
+     0.3
+    ],
+    "low": false
+   },
+   {
+    "block": "b6",
+    "role": "page_number",
+    "align": "center",
+    "style": {
+     "font_px": 20,
+     "family": "Khmer OS",
+     "weight": "regular",
+     "slant": "upright",
+     "heavy": false,
+     "color": "#1a1a1a",
+     "size_model": true
+    },
+    "box": [
+     588.5,
+     1663,
+     63.0,
+     25
+    ],
+    "runs": [
+     {
+      "text": "ទំព័រ ១",
+      "bold": false
+     }
+    ],
+    "text": "ទំព័រ ១",
+    "level": 0,
+    "lines": [
+     1
+    ],
+    "low": false,
+    "type": "page_number"
+   }
+  ]
+ },
+ "doc_kind": {
+  "kind": "mixed",
+  "confidence": 0.81,
+  "source": "model",
+  "tables": 2,
+  "table_area": 0.18,
+  "text_area": 0.055
+ },
+ "timings": {
+  "layout_ms": 71.2,
+  "stamps_found": 0,
+  "stamps_ms": 3.1,
+  "textdet_ms": 540.3,
+  "lines_detected": 40,
+  "bullets_found": 0,
+  "bullets_ms": 4.1,
+  "rec_ms": 610.5,
+  "lines_recognized": 40,
+  "bold_words": 8,
+  "bold_ms": 3.2,
+  "font_ms": 120.4,
+  "structure_ms": 2.1,
+  "order_ms": 12.0,
+  "table_ms": 48.7,
+  "tables": 2,
+  "total_ms": 1420.5
+ },
+ "models": [
+  {
+   "stage": "layout",
+   "id": "layout_yolo11n_v3_22cls"
+  },
+  {
+   "stage": "textdet",
+   "id": "db_ppocrv5_khmer_v2"
+  },
+  {
+   "stage": "rec",
+   "id": "crnn_m_v2_stamp2"
+  },
+  {
+   "stage": "font",
+   "id": "font_cnn_v2"
+  },
+  {
+   "stage": "structure",
+   "id": "struct_v1"
+  },
+  {
+   "stage": "table",
+   "id": "tsr_yolo11n_v1"
+  }
+ ],
+ "device": "cpu",
+ "ignored_regions": []
+}

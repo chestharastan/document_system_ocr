@@ -1,0 +1,7 @@
+# Optional: legacy PyTorch model kinds (ultralytics_pt, doclayout_yolo_pt, ultralytics_lines, torch_resnet_bilstm)
+# and the YOLO -> ONNX export. Not needed for the default ONNX pipeline.
+torch
+torchvision
+ultralytics
+doclayout_yolo
+onnx
