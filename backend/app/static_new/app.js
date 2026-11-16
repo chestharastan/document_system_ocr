@@ -209,7 +209,9 @@ function sidebar() {
   const running = JOB && JOB.status === "running";
   $("#running").classList.toggle("hide", !running || r === "process");
   if (running) $("#running_pct").textContent = Math.round(JOB.done / JOB.total * 100) + "%";
-  $("#dev").textContent = INFO ? INFO.device : "backend offline";
+  let recv = "";
+  try { const r = INFO.stages.rec; const a = r.available.find(m => m.id === r.active); recv = a && a.version ? " · reader " + a.version : ""; } catch {}
+  $("#dev").textContent = INFO ? INFO.device + recv : "backend offline";
 }
 const docTitle = d => d.filename.replace(/\.[^.]+$/, "");
 const outputSel = (id, cur) => `<select id="${id}">${Tables.EXPORTS.map(([k, t]) => `<option value="${k}" ${cur === k ? "selected" : ""}>${t}</option>`).join("")}</select>`;
