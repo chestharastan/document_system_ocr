@@ -120,7 +120,7 @@ const api = {
   async waitLlmJob(id, onProgress) { const t0 = Date.now();
     for (;;) { const j = await api.llmJob(id); if (onProgress) onProgress(j);
       if (j.status === "done") return j.result; if (j.status === "failed") throw new Error(j.error || "failed");
-      if (Date.now() - t0 > 3600e3) throw new Error("no answer after 1 h"); await new Promise(res => setTimeout(res, 4000)); } },
+      if (Date.now() - t0 > 3600e3) throw new Error("no answer after 1 h"); await new Promise(res => setTimeout(res, 1500)); } },
 };
 let INFO = null;
 
@@ -181,8 +181,11 @@ function buildDocPage(doc, onEdit) {
 }
 function fitLines(el, page) {
   const byKey = {}; for (const b of page.blocks) for (const l of b.lines || []) byKey[lineKey(b, l)] = l;
-  for (const d of el.querySelectorAll(".ln")) { const l = byKey[d.dataset.key]; if (!l) continue; d.style.transform = ""; const w = d.offsetWidth, max = l.box.width * 1.06;
-    if (w > max && w > 0) { d.style.transformOrigin = "left bottom"; d.style.transform = `scaleX(${(max / w).toFixed(3)})`; } }
+  for (const d of el.querySelectorAll(".ln")) { const l = byKey[d.dataset.key]; if (!l) continue; d.style.transform = ""; d.style.width = ""; d.style.textAlign = ""; d.style.textAlignLast = ""; const w = d.offsetWidth, max = l.box.width * 1.06;
+    if (w > max && w > 0) { d.style.transformOrigin = "left bottom"; d.style.transform = `scaleX(${(max / w).toFixed(3)})`; }
+    // a line box is tight to the printed ink: a shorter rendering spreads over the box at its spaces (justified text,
+    // the gap before a right-hand column) so both edges match the photo; a line without spaces stays left-aligned
+    else if (w > 0.6 * l.box.width && w < l.box.width * 0.97 && /\s/.test(d.innerText.trim())) { d.style.width = l.box.width + "px"; d.style.textAlign = "justify"; d.style.textAlignLast = "justify"; } }
 }
 const lineKey = (b, l) => `${b.id}:${l.reading_order}`;
 function scaleToFit(wrapper, inner, pageW, pageH) { const k = Math.min(1, (wrapper.clientWidth - 2) / pageW); inner.style.transform = `scale(${k})`; inner.style.transformOrigin = "top left"; wrapper.style.height = pageH * k + "px"; }
@@ -436,20 +439,43 @@ function cellNodeFor(page, b, l) {
   const j = (el.cells || []).findIndex(c => c.r === bc.r && c.c === bc.c); if (j < 0) return null;
   return view.querySelector(`.dv-tablewrap[data-block="${CSS.escape(String(el.block))}"] [data-cell="${j}"]`);
 }
-const llmProgress = j => toast(j.status === "queued" ? `AI model: waiting${j.position ? " (" + j.position + " ahead)" : ""}…` : `AI model working… ${Math.round(j.elapsed_s || 0)} s`);
+/* AI model job progress: a bar that stays on screen while the job runs (progress = share of the page's lines the
+   model has written so far, from GET /llm/jobs/<id>); llmBar(null) hides it */
+function llmBar(j) {
+  let el = $("#llmbar");
+  if (!el) { el = document.createElement("div"); el.id = "llmbar"; el.className = "llmbar";
+    el.innerHTML = `<div class="lb-top"><span class="lb-t"></span><span class="lb-p"></span></div><div class="lb-track"><div class="lb-fill"></div></div><div class="lb-sub"></div>`;
+    document.body.appendChild(el); }
+  if (!j) { el.classList.remove("on"); return; }
+  const p = Math.max(0, Math.min(1, +j.progress || 0)), st = j.status === "queued" ? "queued" : (j.stage || "starting");
+  const sec = Math.round(j.elapsed_s || 0), tot = j.lines_total || 0, done = j.lines_done || 0;
+  const title = {queued: "AI model: waiting in line", starting: "AI model: starting", reading: "AI model: reading the page",
+    writing: "AI model: working out the structure", building: "AI model: building the page", done: "AI model: done"}[st] || "AI model working";
+  const busy = st === "queued" || st === "starting" || (st === "reading" && p === 0);
+  let sub = st === "queued" ? (j.position ? `${j.position} job${j.position === 1 ? "" : "s"} ahead` : "about to start")
+    : tot ? `${done} of ${tot} lines` : "";
+  if (st === "writing" && p >= 0.1 && p < 1) { const left = Math.round(sec * (1 - p) / p); sub += ` · about ${left < 60 ? left + " s" : Math.round(left / 60) + " min"} left`; }
+  if (sec && st !== "queued") sub += (sub ? " · " : "") + `${sec} s so far`;
+  el.querySelector(".lb-t").textContent = title;
+  el.querySelector(".lb-p").textContent = busy ? "" : Math.round(p * 100) + "%";
+  el.querySelector(".lb-sub").textContent = sub;
+  el.querySelector(".lb-fill").style.width = busy ? "" : Math.round(p * 100) + "%";
+  el.classList.toggle("busy", busy); el.classList.add("on");
+}
+const llmProgress = j => llmBar(j);
 function applyLlmResult(pageId, res) { const d = store.get(pageId); if (!d || !res || !Array.isArray(res.blocks)) return false;
   const merged = Object.assign({}, d.result, res); delete merged.llm_job; if (!merged.page_id) merged.page_id = d.page_id; if (!merged.image_url) merged.image_url = d.image_url;
   const nd = summarize(merged, d.filename, d.job, d.size); nd.created = d.created; store.put(nd); return true; }
 async function rerunLlm(d) {
   toast("asking the AI model…");
-  try { const res = await api.llmStructure(d.result, llmProgress); if (!res || !Array.isArray(res.blocks)) throw new Error("no page result in the reply");
+  try { const res = await api.llmStructure(d.result, llmProgress); llmBar(null); if (!res || !Array.isArray(res.blocks)) throw new Error("no page result in the reply");
     applyLlmResult(d.page_id, res); toast("structure from the AI model"); route(); }
-  catch (e) { toast("AI model failed: " + String(e.message || e).slice(0, 80)); }
+  catch (e) { llmBar(null); toast("AI model failed: " + String(e.message || e).slice(0, 80)); }
 }
 /* engine = AI model: /process returns the phone-tier result at once with llm_job; the refinement replaces it when done */
 function followLlmJob(pageId, job) { if (!job || !job.id) return;
-  api.waitLlmJob(job.id).then(res => { if (applyLlmResult(pageId, res)) { toast("AI model structure ready"); if ((location.hash || "").includes(pageId)) route(); } })
-    .catch(e => toast("AI model: " + String(e.message || e).slice(0, 80))); }
+  api.waitLlmJob(job.id, llmProgress).then(res => { llmBar(null); if (applyLlmResult(pageId, res)) { toast("AI model structure ready"); if ((location.hash || "").includes(pageId)) route(); } })
+    .catch(e => { llmBar(null); toast("AI model: " + String(e.message || e).slice(0, 80)); }); }
 function recount(d) { const all = d.result.blocks.flatMap(x => x.lines || []).filter(x => x.text); d.chars = all.reduce((a, x) => a + x.text.length, 0); d.avg_conf = all.reduce((a, x) => a + x.confidence, 0) / Math.max(1, all.length); d.low = all.filter(x => x.confidence < LOW).length; }
 function download(name, data, type) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([data], {type})); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
 function saveBlob(blob, name) { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }

@@ -183,6 +183,8 @@ def _elements(blocks: list[dict], content_w: float, W: int) -> list[dict]:
                             "aspect": round(box.get("height", 1) / max(1.0, box.get("width", 1)), 4)})
             continue
         lines = [l for l in b.get("lines") or [] if l.get("text")]
+        if not lines:  # every line of the block read as empty: nothing to show
+            continue
         by_order = {l.get("reading_order"): l for l in lines}
         paras = b.get("paragraphs") or [{"lines": [l.get("reading_order") for l in lines], "indent_level": lines[0].get("indent_level", 0), "bullet": lines[0].get("bullet")}]
         short_bold = len(paras) == 1 and len(lines) == 1 and (b.get("bold") or base["style"]["heavy"]) and box.get("width", 0) < 0.6 * content_w and len(lines[0]["text"]) <= 60

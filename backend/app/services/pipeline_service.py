@@ -39,7 +39,7 @@ from app.services.page_structure import (find_decorations, find_rules, measure_f
 from app.services.image_io import read_image
 from app.services.model_pool import ModelPool
 from app.services.reading_order import xy_cut
-from app.services.structure_model import apply_structure, order_blocks
+from app.services.structure_model import apply_structure, order_blocks, regroup
 from app.services.stamps import STAMP_CLASSES, clean_red, find_stamps, red_ink_mask, stamp_layer
 from app.services.tables import GRID_KEEP, _overlap, apply_tables, decide_kind, find_grid_tables, render_table  # v3 tables
 from app.services.stages.base import LineResult
@@ -605,7 +605,8 @@ class PipelineService:
             out.append(blk)
         return out
 
-    def _finish(self, bgr, blocks, crop_dir, prefix, recognize, timings, t_start, extra=None):
+    def _finish(self, bgr, blocks, crop_dir, prefix, recognize, timings, t_start, extra=None, regroup_blocks=False):
+        # regroup_blocks: layout-detected blocks may be rebuilt from the structure model; user-drawn regions never are
         H, W = bgr.shape[:2]
         self._bgr = bgr
         t = time.perf_counter()
@@ -655,6 +656,9 @@ class PipelineService:
             if len(lines) >= 2:
                 preds = {id(ln): p for ln, p in zip(lines, model.predict(lines, W, H))}
                 timings["structure"] = apply_structure(blocks, preds, TEXT_CLASSES)
+                if regroup_blocks and settings.structure_regroup:  # paragraphs rebuilt across layout boxes (a list box that swallowed the
+                    # next clause, a box overlapping another one, a justified line cut in two at a wide gap)
+                    timings["structure"].update(regroup(blocks, preds, TEXT_CLASSES, self._block, only_tangled=True))
                 for b in blocks:  # a heading cut out of a paragraph block gets its own typeface vote
                     if b.get("split_role"):
                         b.pop("font", None)
@@ -817,6 +821,8 @@ class PipelineService:
 
         t = time.perf_counter()
         lines = self._detect_lines(bgr, blocks)
+        blocks = drop_background_figures(bgr, blocks, lines, ignored)
+        timings["background_figures"] = drop_background_figures.last
         orphans = self._assign(lines, blocks)
         if settings.split_figures:  # a figure holding text lines: picture keeps the box, the lines become text
             gray = bgr if bgr.ndim == 2 else cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
@@ -853,7 +859,7 @@ class PipelineService:
         timings["lines_detected"] = len(lines)
 
         return self._finish(bgr, blocks, crop_dir, crop_url_prefix, recognize, timings, t_start,
-                            {"ignored_regions": ignored})
+                            {"ignored_regions": ignored}, regroup_blocks=True)
 
     def process_regions(self, image_path: str, regions: list, crop_dir: str, crop_url_prefix: str = "",
                         recognize: bool = True) -> dict:
@@ -939,3 +945,54 @@ def absorb_duplicate_figures(blocks: list, min_cover: float = 0.5) -> list:
         out.append(b)
     absorb_duplicate_figures.last = n
     return out
+
+
+BACKGROUND_CLASSES = ("figure", "photo")
+
+
+def drop_background_figures(bgr: np.ndarray, blocks: list, lines: list, ignored: list, min_outside: float = 0.7,
+                            max_paper: float = 0.4) -> list:
+    """A phone photo of a sheet lying on a desk: the layout model calls a strip of the desk (wood grain) along the
+    image border a "figure". Such a block touches the image border, lies (>= min_outside of its area) outside the
+    box of all detected text lines, holds no text line, and is mostly not paper (paper = bright and unsaturated);
+    it goes to ``ignored`` with reason "background". A real picture of the document lies inside the text area or on
+    paper, and a scan has a margin between the picture and the border."""
+    drop_background_figures.last = 0
+    H, W = bgr.shape[:2]
+    boxes = [_bbox(q) for q, _ in lines]
+    if len(boxes) < 3:
+        return blocks
+    tx0, ty0 = min(b[0] for b in boxes), min(b[1] for b in boxes)
+    tx1, ty1 = max(b[2] for b in boxes), max(b[3] for b in boxes)
+    hsv = None
+    keep = []
+    for b in blocks:
+        x0, y0, x1, y1 = b["box"]
+        border = min(x0, y0, W - x1, H - y1) <= 0.015 * max(W, H)
+        if b["cls"] not in BACKGROUND_CLASSES or not border or x1 - x0 < 4 or y1 - y0 < 4:
+            keep.append(b)
+            continue
+        area = (x1 - x0) * (y1 - y0)
+        ix = max(0.0, min(x1, tx1) - max(x0, tx0)) * max(0.0, min(y1, ty1) - max(y0, ty0))
+        has_line = any(_inside(((l[0] + l[2]) / 2, (l[1] + l[3]) / 2), b["box"]) for l in boxes)
+        if has_line or 1.0 - ix / area < min_outside:
+            keep.append(b)
+            continue
+        if hsv is None:
+            hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV) if bgr.ndim == 3 else None
+        if hsv is not None:
+            r = hsv[int(y0):int(math.ceil(y1)), int(x0):int(math.ceil(x1))]
+            paper = float(np.mean((r[:, :, 2] > 170) & (r[:, :, 1] < 40))) if r.size else 1.0
+        else:
+            r = bgr[int(y0):int(math.ceil(y1)), int(x0):int(math.ceil(x1))]
+            paper = float(np.mean(r > 200)) if r.size else 1.0
+        if paper > max_paper:
+            keep.append(b)
+            continue
+        ignored.append({"cls": b["cls"], "label": b["label"], "score": round(b["score"], 4),
+                        "box": [round(v, 1) for v in b["box"]], "reason": "background"})
+        drop_background_figures.last += 1
+    return keep
+
+
+drop_background_figures.last = 0

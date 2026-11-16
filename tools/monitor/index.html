@@ -137,7 +137,7 @@ function runCard(r) {
     const e = r.epochs;
     body += progressHtml(r.progress);
     body += `<div class="kv"><div>state <b>${esc(r.state || "?")}</b></div>${r.params_m ? `<div><b>${r.params_m.toFixed(2)}M</b> params</div>` : ""}
-      ${r.best_val_cer != null ? `<div>best val CER <b>${r.best_val_cer.toFixed(3)}%</b></div>` : ""}</div>`;
+      ${r.best_val_cer != null && r.best_val_cer < 1000 ? `<div>best val CER <b>${r.best_val_cer.toFixed(3)}%</b></div>` : ""}</div>`;
     const sets = [...new Set(e.flatMap(x => Object.keys(x.val_by_set || {})))];
     const ser = sets.map((s, i) => ({name: s, color: colors[i % colors.length], pts: e.filter(x => x.val_by_set && s in x.val_by_set).map(x => [x.epoch, x.val_by_set[s]])}));
     body += chart(ser, {ylabel: "val CER % (lower = better)", pct: true});

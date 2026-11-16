@@ -203,3 +203,15 @@ h1 .menu{font-size:14px;font-weight:400;letter-spacing:0;line-height:1.5}
 .help h3{margin:18px 0 6px}
 kbd{font:12px ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 6px;background:#fafafa}
 @media(max-width:860px){.shell{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 8px}nav{flex-direction:row}.side .spacer,.foot{display:none}.page{padding:24px 18px 48px}.review,.review.text,.review.original{grid-template-columns:1fr}.thumbs{flex-direction:row}}
+
+/* ---------- AI model job progress bar */
+.llmbar{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);width:min(420px,calc(100vw - 32px));background:var(--ink);color:#fff;padding:12px 16px 11px;border-radius:14px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:49;opacity:0;transition:opacity .2s;pointer-events:none}
+.llmbar.on{opacity:1}
+.llmbar .lb-top{display:flex;justify-content:space-between;gap:12px;font-weight:600}
+.llmbar .lb-p{font-variant-numeric:tabular-nums}
+.llmbar .lb-track{height:6px;border-radius:999px;background:rgba(255,255,255,.18);margin:8px 0 6px;overflow:hidden;position:relative}
+.llmbar .lb-fill{height:100%;width:0;border-radius:999px;background:#fff;transition:width .6s ease}
+.llmbar.busy .lb-fill{width:30%!important;position:absolute;animation:lbslide 1.3s ease-in-out infinite}
+@keyframes lbslide{0%{left:-30%}100%{left:100%}}
+.llmbar .lb-sub{font-size:12px;opacity:.75;font-variant-numeric:tabular-nums}
+body:has(.llmbar.on) .toast{bottom:112px}

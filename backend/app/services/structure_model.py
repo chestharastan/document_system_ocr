@@ -159,10 +159,40 @@ def order_blocks(blocks: list, fallback) -> list:
     out: list = []
     for b in text:
         for o in sorted(others, key=lambda o: o["box"][1]):
-            if o["box"][1] + o["box"][3] <= b["box"][1] + b["box"][3] and o not in out:
+            # above the block, or beside it on its left (an emblem left of the company name: the letterhead row)
+            if (o["box"][1] + o["box"][3] <= b["box"][1] + b["box"][3] or _left_beside(o["box"], b["box"])) and o not in out:
                 out.append(o)
         out.append(b)
     out += [o for o in sorted(others, key=lambda o: o["box"][1]) if o not in out]
+    return _repair_order(out)
+
+
+def _left_beside(o, b) -> bool:
+    """box o ([x0, y0, x1, y1]) sits left of box b and starts within the upper half of its own height of b's top."""
+    ox0, oy0, ox1, oy1 = o
+    bx0, by0, bx1, by1 = b
+    return ox1 <= bx0 + 0.02 * max(1.0, bx1 - bx0) and oy0 < by1 and oy1 > by0 and oy0 <= by0 + 0.5 * max(1.0, oy1 - oy0)
+
+
+def _repair_order(order: list) -> list:
+    """A block may not come before a block that lies wholly above it in the same column (horizontal overlap): the
+    structure model sometimes reads the form fields at the bottom of a page before the closing paragraph above them.
+    Stable topological sort: every block waits for the blocks above it in its column, ties keep the given order."""
+    def must_follow(a, b) -> bool:  # a lies below b in b's column
+        ax0, ay0, ax1, ay1 = a["box"]
+        bx0, by0, bx1, by1 = b["box"]
+        hov = min(ax1, bx1) - max(ax0, bx0)
+        return hov > 0.1 * min(ax1 - ax0, bx1 - bx0) and ay0 >= by1 - 0.1 * min(ay1 - ay0, by1 - by0)
+
+    n = len(order)
+    preds = [{j for j in range(n) if j != i and must_follow(order[i], order[j])} for i in range(n)]
+    done: set = set()
+    out = []
+    while len(out) < n:
+        ready = [i for i in range(n) if i not in done and preds[i] <= done]
+        i = ready[0] if ready else min(i for i in range(n) if i not in done)  # a cycle (overlapping boxes): given order
+        done.add(i)
+        out.append(order[i])
     return out
 
 
@@ -178,6 +208,52 @@ def _vov(a, b) -> float:
 
 def _same_row(a, b) -> bool:
     return _vov(a, b) > 0.5 * min(a[3] - a[1], b[3] - b[1])
+
+
+def tangled_blocks(blocks: list, min_cover: float = 0.25) -> list:
+    """Text blocks whose layout boxes overlap another one's (>= min_cover of the smaller box, or a line of one lies in
+    the other's box): the layout model cut those lines wrongly (a list box that swallowed the next clause, a row box
+    inside a paragraph box) and only they are rebuilt; well-separated blocks keep the layout model's grouping."""
+    def area(b):
+        x0, y0, x1, y1 = b
+        return max(1.0, (x1 - x0) * (y1 - y0))
+
+    def inter(a, b):
+        return max(0.0, min(a[2], b[2]) - max(a[0], b[0])) * max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+
+    def line_in(a, b):  # a line of block a has its centre inside block b's box
+        bx0, by0, bx1, by1 = b["box"]
+        return any(bx0 <= (l["bbox"][0] + l["bbox"][2]) / 2 <= bx1 and by0 <= (l["bbox"][1] + l["bbox"][3]) / 2 <= by1
+                   for l in a["lines"])
+
+    out = set()
+    for i, a in enumerate(blocks):
+        for b in blocks[i + 1:]:
+            if inter(a["box"], b["box"]) >= min_cover * min(area(a["box"]), area(b["box"])) or line_in(a, b) or line_in(b, a):
+                out.add(id(a)); out.add(id(b))
+    return [b for b in blocks if id(b) in out]
+
+
+def _centred_next(prev: dict, ln: dict, mh: float) -> bool:
+    """``ln`` is the next centred line under ``prev``: both indented from each other on both sides (not left-aligned),
+    sharing their centre, without an extra gap."""
+    a, b = prev["bbox"], ln["bbox"]
+    return (abs((a[0] + a[2]) / 2 - (b[0] + b[2]) / 2) <= 1.5 * mh and abs(a[0] - b[0]) > 1.0 * mh
+            and -0.3 * mh <= b[1] - a[3] <= 0.7 * mh)
+
+
+def _continues(para: list, ln: dict, mh: float) -> bool:
+    """``ln`` continues the paragraph ``para`` (lines in reading order) although the model saw a paragraph start: the
+    paragraph's last row reaches the paragraph's right edge (a justified line; a short last line ends a paragraph),
+    ``ln`` starts at the left edge of the paragraph's continuation lines, and follows without an extra gap (the
+    model splits a long justified clause after a fold or a wide-gap row: user's folded contract photo)."""
+    last = para[-1]["bbox"]
+    row = [l["bbox"] for l in para if _same_row(l["bbox"], last)]
+    right = max(l["bbox"][2] for l in para)
+    body = [l["bbox"][0] for l in para if not _same_row(l["bbox"], para[0]["bbox"])] or [para[0]["bbox"][0]]
+    b = ln["bbox"]
+    return (max(r[2] for r in row) >= right - 1.0 * mh and b[2] <= right + 1.0 * mh
+            and abs(b[0] - min(body)) <= 0.8 * mh and 0 <= b[1] - max(r[3] for r in row) + 0.3 * mh <= 1.0 * mh)
 
 
 def _join_row(lines: list) -> dict:
@@ -197,7 +273,8 @@ def _join_row(lines: list) -> dict:
     base["score"] = max(l.get("score", 0.0) for l in lines)
     spans = []
     for l in lines:
-        spans += l.get("spans") or [{"text": l.get("text", ""), "bold": bool(l.get("bold"))}]
+        spans += l.get("spans") or [{"text": l.get("text", ""), "bold": bool(l.get("bold")),
+                                     "x0": float(l["bbox"][0]), "x1": float(l["bbox"][2])}]  # text_colors reads x0/x1
     base["spans"] = [sp for sp in spans if sp.get("text")]
     base["bold"] = all(l.get("bold") for l in lines)
     base.pop("char_pos", None)
@@ -205,7 +282,7 @@ def _join_row(lines: list) -> dict:
     return base
 
 
-def regroup(blocks: list, preds: dict, text_classes: set, block_factory) -> dict:
+def regroup(blocks: list, preds: dict, text_classes: set, block_factory, only_tangled: bool = False) -> dict:
     """Rebuild the text blocks of the page from the structure model: the layout model cuts one paragraph into
     several boxes (a clause split at a page fold, a heading glued to the clause below it, a justified line cut in
     two), and the rules never join paragraphs across boxes. Here all text lines (tables / forms / handwriting kept as
@@ -217,6 +294,8 @@ def regroup(blocks: list, preds: dict, text_classes: set, block_factory) -> dict
     stats = {"regroup_in": 0, "regroup_out": 0, "rows_joined": 0}
     src = [b for b in blocks if b["cls"] in text_classes and b["cls"] not in REGROUP_SKIP and b["lines"]
            and all(id(ln) in preds for ln in b["lines"])]
+    if only_tangled:
+        src = tangled_blocks(src)
     if not src:
         return stats
     owner = {id(ln): b for b in src for ln in b["lines"]}
@@ -235,6 +314,10 @@ def regroup(blocks: list, preds: dict, text_classes: set, block_factory) -> dict
                 and owner[id(ln)]["cls"] == owner[id(prev)]["cls"] or (_same_row(a, b_) and b_[0] >= a[2] - 0.5 * mh and b_[0] - a[2] < 2.5 * mh and not ln.get("bullet")):
             paras[-1].append(ln); continue  # the rest of the same printed row
         start = bool(ln.get("bullet")) or p["first_p"] >= FIRST_P
+        if start and not ln.get("bullet") and len(paras[-1]) >= 2 and _continues(paras[-1], ln, mh):
+            start = False  # the line above ran to the paragraph's right edge and this one sits at its left edge
+        if start and not ln.get("bullet") and owner[id(ln)] is owner[id(prev)] and _centred_next(prev, ln, mh):
+            start = False  # the next line of a centred block (a royal title over several lines) from one layout box
         if not start and p["role"] != pp["role"] and p["role_p"] >= ROLE_SWITCH_P and pp["role_p"] >= ROLE_SWITCH_P:
             start = True
         if not start:  # geometry: going back up, a big gap, or another column

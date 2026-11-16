@@ -816,3 +816,22 @@ def test_streamed_degenerate_loop_is_stopped_and_salvaged():
     ans, meta = structure_lines(lines, 1000, 1000, prov)
     assert meta["salvaged"] == 1 and prov.stats["truncated"] == 1
     assert sorted(i for e in ans["els"] for i in e["l"]) == [1, 2, 3, 4]      # loop cut, line 4 added back
+
+
+def test_job_progress(fake, monkeypatch):
+    import time as _t
+    seen = []
+    chk = ls._with_progress(lambda t: False, {0, 1, 2, 3}, 0, 8, lambda *a: seen.append(a))
+    chk('{"els":[{"t":"p","l":[0,1')
+    chk('{"els":[{"t":"p","l":[0,1]},{"t":"p","l":[2,77')
+    assert seen == [("writing", 2, 8), ("writing", 3, 8)]
+    jobs = ls.LLMJobs()
+    j = jobs.submit(make_result())
+    assert j["progress"] == 0.0 and j["stage"] == "queued" and j["lines_total"] > 0
+    for _ in range(200):
+        st = jobs.public(j["id"])
+        if st["status"] in ("done", "failed"):
+            break
+        _t.sleep(0.02)
+    assert st["status"] == "done" and st["progress"] == 1.0 and st["stage"] == "done"
+    assert st["lines_done"] == st["lines_total"]

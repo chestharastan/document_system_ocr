@@ -32,7 +32,8 @@
   function family(st) { const fam = st && st.family; if (!fam) return '"Noto Sans Khmer","Khmer OS",sans-serif'; if (LATIN[fam]) return LATIN[fam]; ensureFont(fam); return `"${fam}","Noto Sans Khmer",sans-serif`; }
   // font_px from the font model (size_model) is the em size of the printed line: use it as is. The ink-core fallback
   // underestimates Khmer set in a fallback web font (x1.15) and Noto's small bodies (x1.2).
-  function sizePx(st, text, scale, body) { let px = st && st.font_px ? st.font_px : body; if (!(st && st.size_model)) { if (KHMER.test(text || "") && !(st && st.family && FONT_FILES[st.family])) px *= 1.15; if (st && /^Noto/.test(st.family || "")) px *= 1.2; } return Math.max(6, px * scale); }
+  let UNIFORM = 0;  // one font size for the whole page (default): the per-block measured sizes were sometimes wrong
+  function sizePx(st, text, scale, body) { if (UNIFORM) return Math.max(6, UNIFORM * scale); let px = st && st.font_px ? st.font_px : body; if (!(st && st.size_model)) { if (KHMER.test(text || "") && !(st && st.family && FONT_FILES[st.family])) px *= 1.15; if (st && /^Noto/.test(st.family || "")) px *= 1.2; } return Math.max(6, px * scale); }
   function runsHtml(runs, heavy, low) { const h = (runs || []).map(r => r.bold && !heavy ? `<b>${esc(r.text)}</b>` : esc(r.text)).join(""); return low ? `<span class="dv-low">${h}</span>` : h; }
   function style(st, text, scale, body) { const s = st || {}; return `font-family:${family(s)};font-size:${sizePx(s, text, scale, body).toFixed(2)}px;color:${s.color || "#1a1a1a"};${s.slant === "italic" ? "font-style:italic;" : ""}${s.weight === "bold" && !s.heavy ? "font-weight:700;" : ""}`; }
   function median(a) { if (!a.length) return 0; const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; }
@@ -69,7 +70,8 @@
   }
 
   /** page: backend page result with .document; opts: {scale (px multiplier), editable, onEdit(blockId, lineOrders, newText),
-      onCellEdit(tableElement, cellIndex, newText), flow (true = old free reflow)} */
+      onCellEdit(tableElement, cellIndex, newText), flow (true = old free reflow), fontSizes (true = per-block measured sizes
+      fitted to the photo's line count; default false = one page-wide body size, no fitting)} */
   function render(page, opts) {
     opts = opts || {};
     const doc = page.document, W = page.width, scale = opts.scale || 1;
@@ -78,6 +80,10 @@
     const blockOf = e => blocks[e.block] || (Number.isInteger(e.block) ? (page.blocks || [])[e.block] : null) || null;  // id, or index (contract example)
     const allEls = doc.elements.flatMap(e => e.columns ? e.columns.flatMap(c => c.elements) : [e]);
     const bodyPx = median(allEls.filter(e => e.type === "paragraph").map(e => e.style && e.style.font_px).filter(Boolean)) || 0.016 * W;
+    // uniform size: the median over every paragraph and list item (by text length, so one big title cannot move it)
+    const textEls = allEls.flatMap(e => e.items ? e.items : [e]).filter(e => e.style && e.style.font_px && e.text);
+    const weighted = textEls.flatMap(e => Array(Math.min(20, Math.max(1, Math.round(e.text.length / 20)))).fill(e.style.font_px));
+    UNIFORM = opts.fontSizes ? 0 : (median(weighted) || bodyPx);
     const fits = [];  // text elements to fit once fonts are loaded
     let tableNo = 0;
 
@@ -98,7 +104,7 @@
     root.style.cssText = `width:${S(W)};min-height:${S(page.height)};padding:${S(doc.margins.top)} ${S(doc.margins.right)} ${S(doc.margins.bottom)} ${S(doc.margins.left)};--dv-body:${S(bodyPx)}`;
     const edit = (el, e) => { if (!opts.editable) return; el.contentEditable = "true"; el.spellcheck = false; el.addEventListener("blur", () => { const t = el.innerText.replace(/\s+$/, ""); if (t !== e.text && opts.onEdit) opts.onEdit(e.block, e.lines, t); }); };
     renderInto(root, doc.elements, doc.margins.left, W - doc.margins.right, doc.margins.top);
-    scheduleFit(root, fits);
+    if (opts.fontSizes) scheduleFit(root, fits);
     return root;
 
     // container spans page-x [x0, x1]; its content starts at page-y y0
@@ -122,8 +128,9 @@
       let px = x0;
       for (const k of cols) {
         const col = document.createElement("div"); col.className = "dv-col";
-        const left = Math.max(k.cx0, px);  // never overlap the previous column
-        col.style.cssText = `flex:none;width:${S(Math.max(10, k.cx1 - left))};margin-left:${S(left - px)};min-width:0;${k.c.align ? alignCss(k.c.align) : ""}`;
+        const left = k === cols[0] ? k.cx0 : Math.max(k.cx0, px);  // never overlap the previous column (the first may sit left of the margin)
+        const right = k === cols[cols.length - 1] && UNIFORM ? Math.max(k.cx1, x1) : k.cx1;  // uniform size: the last column may use the page width
+        col.style.cssText = `flex:none;width:${S(Math.max(10, right - left))};margin-left:${S(left - px)};min-width:0;${k.c.align ? alignCss(k.c.align) : ""}`;
         renderInto(col, k.c.elements, left, k.cx1, top);
         row.appendChild(col); px = k.cx1;
       }
@@ -185,12 +192,12 @@
         const full = lb.slice(0, -1).filter(b => ext[2] - (b.x + b.width) < 0.03 * w).length;
         if (full >= Math.max(1, 0.7 * (n - 1))) align = "justify";
       }
-      if (align === "left" || align === "justify") css += `margin-left:${S(ext[0] - x0)};width:${S(w)};`;
+      if (align === "left" || align === "justify") css += `margin-left:${S(ext[0] - x0)};` + (n === 1 && UNIFORM ? "" : `width:${S(w)};`);  // uniform size: one line takes the room it needs
       else css += `margin-left:auto;margin-right:auto;max-width:none;`;
       if (align === "center") { const cx = (ext[0] + ext[2]) / 2, mid = (x0 + x1) / 2; css += `position:relative;left:${S(cx - mid)};width:${S(Math.max(w, 1))};`; }
       if (align === "right") css += `width:${S(w)};margin-right:${S(Math.max(0, x1 - ext[2]))};margin-left:auto;`;
       css += alignCss(align);
-      if (n === 1) css += "white-space:nowrap;";
+      if (n === 1 && opts.fontSizes) css += "white-space:nowrap;";  // uniform size: a long line may wrap rather than run off the page
       if (pt) css += `line-height:${S(pt)};`;
       else if (lb.length === 1) css += `line-height:${S(Math.max(lb[0].height, (e.style && e.style.font_px || bodyPx) * 1.3))};`;
       if (lb.length >= 2) { const ind = lb[0].x - ext[0]; if (ind > 0.01 * w) css += `text-indent:${S(ind)};`; }

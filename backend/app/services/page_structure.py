@@ -92,6 +92,15 @@ def is_decoration(ink: np.ndarray, ln: dict, page_line_h: float, W: int, H: int)
     return False
 
 
+def _between_row_pieces(box, lines: list) -> bool:
+    """``box`` sits on the row of text lines with a line centred on its left AND one centred on its right (vertical
+    overlap >= half the box height; the speck may touch the pieces)."""
+    x0, y0, x1, y1 = box
+    h = max(1.0, y1 - y0)
+    row = [l["bbox"] for l in lines if min(y1, l["bbox"][3]) - max(y0, l["bbox"][1]) >= 0.5 * h]
+    return any((r[0] + r[2]) / 2 < x0 for r in row) and any((r[0] + r[2]) / 2 > x1 for r in row)
+
+
 def find_decorations(ink: np.ndarray, blocks: list, text_classes: set, block_factory) -> list:
     """Move decoration lines out of text blocks into "decoration" blocks (crop class). Returns the new block list."""
     H, W = ink.shape[:2]
@@ -109,6 +118,8 @@ def find_decorations(ink: np.ndarray, blocks: list, text_classes: set, block_fac
         deco_ids = {id(l) for l in deco}  # identity: line dicts hold numpy quads, == on them is ambiguous
         keep = [l for l in b["lines"] if id(l) not in deco_ids]
         for l in deco:
+            if _between_row_pieces(l["bbox"], keep):
+                continue  # a speck in the wide gap of a justified row (paper grain, a fold), not an ornament: dropped
             d = block_factory("decoration", l["bbox"], b["score"], "decoration", source="heuristic")
             extra.append(d)
         if keep:
