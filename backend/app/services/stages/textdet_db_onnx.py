@@ -90,7 +90,9 @@ def boxes_from_prob(prob, h0, w0, thresh=0.3, box_thresh=0.5, unclip_ratio=1.6, 
     cnts, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     sy, sx = h0 / prob.shape[0], w0 / prob.shape[1]
     out = []
-    for c in cnts[:max_candidates]:
+    if len(cnts) > max_candidates:  # keep the biggest: a dotted / grid-ruled page leaves thousands of specks, and
+        cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:max_candidates]  # findContours order would drop lines
+    for c in cnts:
         if len(c) < 4:
             continue
         rect = cv2.minAreaRect(c)

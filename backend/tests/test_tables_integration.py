@@ -209,3 +209,19 @@ def test_export_xlsx_page_without_tables_holds_its_text():
         r = c.post("/export/xlsx", json={"pages": [_table_page(), _text_page()], "title": "job"})
         wb = openpyxl.load_workbook(io.BytesIO(r.content))
         assert wb.sheetnames == ["P1", "P2"] and wb["P1"]["C2"].value == 1234.5 and wb["P2"]["A2"].value == "First paragraph."
+
+
+def test_find_grid_tables_ignores_grid_notebook_with_handwriting():
+    """Khmer exercise books: vertical rules every ~1-2 cm under the writing lines; the writing crosses them."""
+    img = np.full((1400, 1000), 255, np.uint8)
+    for y in range(150, 1350, 40):
+        cv2.line(img, (40, y), (960, y), 0, 2)
+    for x in range(40, 961, 70):
+        cv2.line(img, (x, 150), (x, 1310), 0, 2)
+    rng = np.random.default_rng(0)
+    for y in range(150, 1310, 40):  # a "word" scribble on every line, running across the vertical rules
+        xs = np.arange(60, 900, 3)
+        ys = (y + 20 + 9 * np.sin(xs / 7.0 + rng.uniform(0, 6))).astype(int)
+        cv2.polylines(img, [np.stack([xs, ys], 1).astype(np.int32)], False, 0, 2)
+    ink = (img < 128).astype(np.uint8) * 255
+    assert T.find_grid_tables(ink, []) == []

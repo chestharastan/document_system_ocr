@@ -1018,6 +1018,7 @@ def find_grid_tables(ink: np.ndarray, blocks: list) -> list[list[float]]:
     n, lab, st, _ = cv2.connectedComponentsWithStats(hd | vd, 8)
     xn, xlab, xst, xcen = cv2.connectedComponentsWithStats(hd & vd, 8)
     tables_now = [_box4(b) for b in blocks if (b.get("cls") or "") == "table"]
+    find_grid_tables_debug.clear()
     out = []
     for i in range(1, n):
         x, y, w, h = (int(v) for v in st[i][:4])
@@ -1033,8 +1034,51 @@ def find_grid_tables(ink: np.ndarray, blocks: list) -> list[list[float]]:
         box = [float(x), float(y), float(x + w), float(y + h)]
         if any(_overlap(box, t) >= 0.3 or _overlap(t, box) >= 0.5 for t in tables_now):
             continue
+        if _notebook_grid(bw, hor, ver, lab == i, box, [float(np.mean(c)) for c in cols]):
+            continue
         out.append(box)
     return out
+
+
+NOTEBOOK_CROSS = 0.05       # share of vertical-rule length crossed by writing: tables <= 0.04, notebook grids >= 0.06
+NOTEBOOK_CROSS_REGULAR = 0.025  # ... a lower bar when the columns are many and evenly spaced (printed notebook grid)
+find_grid_tables_debug: list = []  # (box, crossing, n_cols, gap_cv) of the last call, for tuning
+
+
+def _notebook_grid(bw: np.ndarray, hor: np.ndarray, ver: np.ndarray, comp: np.ndarray, box: list, cols: list) -> bool:
+    """A grid-ruled notebook page (Khmer school exercise books: faint vertical rules every ~1-2 cm under the
+    horizontal writing lines) is not a table: the handwriting runs straight across the vertical rules, while table
+    text stays inside its cells. Measures the share of vertical-rule rows that have writing (ink that is not a rule)
+    on both sides right next to the rule; evenly spaced columns lower the bar."""
+    x0, y0, x1, y1 = (int(v) for v in box)
+    H, W = bw.shape
+    rules = cv2.dilate(hor | ver, np.ones((5, 5), np.uint8))
+    text = bw & (1 - rules)
+    v = (ver > 0) & comp
+    tot = hit = 0
+    n, lab, st, _ = cv2.connectedComponentsWithStats(v[y0:y1, x0:x1].astype(np.uint8), 8)
+    for j in range(1, n):
+        cx, cy, cw, ch = (int(t) for t in st[j][:4])
+        if ch < 0.2 * (y1 - y0):
+            continue
+        sub = lab[cy:cy + ch, cx:cx + cw] == j
+        rows = np.nonzero(sub.any(1))[0]
+        lefts = sub.argmax(1)[rows] + x0 + cx
+        rights = cw - 1 - sub[:, ::-1].argmax(1)[rows] + x0 + cx
+        for r, a, b in zip(rows + y0 + cy, lefts, rights):
+            if a - 6 < 0 or b + 7 > W:
+                continue
+            tot += 1
+            if hor[r, a - 6:b + 7].any():
+                continue
+            if text[r, a - 6:a - 2].any() and text[r, b + 3:b + 7].any():
+                hit += 1
+    cross = hit / max(1, tot)
+    gaps = np.diff(sorted(cols))
+    cv = float(gaps.std() / max(1e-6, gaps.mean())) if gaps.size >= 2 else 9.0
+    regular = len(cols) >= 7 and cv < 0.2
+    find_grid_tables_debug.append((box, round(cross, 3), len(cols), round(cv, 3)))
+    return tot > 0 and (cross >= NOTEBOOK_CROSS or (regular and cross >= NOTEBOOK_CROSS_REGULAR))
 
 
 def _overlap(a: list, b: list) -> float:
